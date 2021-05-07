@@ -1,7 +1,7 @@
 package aplicacion;
 
 
-import vista.MainWindow;
+import vista.MainBoss;
 
 
 public class Principal {
@@ -11,8 +11,8 @@ public class Principal {
 	//	CochePropietarioControlador datos = new CochePropietarioControladorBDImplementation();
 		
 		//Pantalla inicial
-		MainWindow ventanaPrincipal = new MainWindow();
-		ventanaPrincipal.setVisible(true);
+	//	MainBoss ventanaPrincipal = new MainBoss();
+		//ventanaPrincipal.setVisible(true);
 	}
 
 }

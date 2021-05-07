@@ -7,7 +7,7 @@ public class Boss extends User{
 	private String speciality;
 	private LocalDateTime joiningDate;
 	private int seniority;
-	//Este es un comentario para git.
+	
 	
 	//Constructor
 	public Boss(String id, String password, String name, String surname, char type, String speciality,
