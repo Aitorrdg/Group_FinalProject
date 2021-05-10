@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -52,11 +53,11 @@ public class BDImplementationWorker implements InterfaceWorker{
 
 	//Method to list al services by using the worker id
 	@Override
-	public Map<String, Service> listServices(String codW) throws Exception {
+	public ArrayList<Service> listServices(String codW) throws Exception {
 		// TODO Auto-generated method stub
 		ResultSet rs=null;
 		Service se;
-		Map <String,Service> servicios=null;
+		ArrayList<Service> servicios=null;
 		this.openConnection();
 		
 		stmt=con.prepareStatement(GETser);
@@ -74,8 +75,8 @@ public class BDImplementationWorker implements InterfaceWorker{
 			se.setWorkerId(codW);
 			se.setFinished(rs.getBoolean("finished"));
 			se.setDescription(rs.getString("description"));
-			servicios= new TreeMap<>();
-			servicios.put(se.getCodeService(), se);
+			servicios= new ArrayList<>();
+			servicios.add(se);
 		}
 		
 		this.closeConnection();

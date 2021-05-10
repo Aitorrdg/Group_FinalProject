@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import modelo.BDImplementationAdmin;
+import modelo.Boss;
 import modelo.InterfaceAdministrator;
 import modelo.InterfaceBoss;
 import modelo.InterfaceWorker;
@@ -35,9 +36,11 @@ public class MainBoss extends JFrame implements ActionListener {
 	private JButton btnManageServices;
 	private Set<Worker> workers;
 	private InterfaceBoss datosBoss;
+	private Boss boss;
 
-	public MainBoss(User u, InterfaceAdministrator datosUser, InterfaceBoss datosBoss) {
+	public MainBoss(Boss b, InterfaceAdministrator datosUser, InterfaceBoss datosBoss) {
 		this.datosBoss = datosBoss;
+		boss=b;
 		try {
 			workers = datosBoss.listWorkers();
 		} catch (Exception e1) {
@@ -99,7 +102,7 @@ public class MainBoss extends JFrame implements ActionListener {
 		bossName.setBounds(227, 61, 191, 31);
 		bossName.setBorder(new LineBorder(new Color(207, 226, 243)));
 		bossName.setBackground(new Color(207, 226, 243));
-		bossName.setText(u.getName() + " " + u.getSurname());
+		bossName.setText(b.getName() + " " + b.getSurname());
 		backPanel.add(bossName);
 		bossName.setColumns(10);
 
@@ -108,7 +111,7 @@ public class MainBoss extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnManageWorkers)) {
-			AddEditDeleteWindow aedw = new AddEditDeleteWindow(datosBoss, workers);
+			AddEditDeleteWindow aedw = new AddEditDeleteWindow(datosBoss, workers,boss);
 			this.dispose();
 			aedw.setVisible(true);
 		}

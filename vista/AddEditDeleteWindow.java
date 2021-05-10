@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import modelo.Boss;
 import modelo.InterfaceBoss;
 import modelo.Worker;
 import javax.swing.border.LineBorder;
@@ -26,9 +27,11 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener{
 	private JButton btnModify;
 	private JButton btnDelete;
 	private InterfaceBoss datosBoss;
+	private Boss boss;
 
-	public AddEditDeleteWindow(InterfaceBoss datosBoss, Set<Worker> workers) {
+	public AddEditDeleteWindow(InterfaceBoss datosBoss, Set<Worker> workers,Boss b) {
 		this.datosBoss=datosBoss;
+		boss=b;
 		setModal(true);
 		setResizable(false);
 		setForeground(new Color(238, 130, 238));
@@ -74,12 +77,14 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		Worker w=new Worker();
 		if(e.getSource().equals(btnAdd)) {
-			CrudWindow crW=new CrudWindow(datosBoss);
-			this.dispose();
-			crW.setVisible(true);
+			if(w.getSalary()==0) {
+				CrudWindow crW=new CrudWindow(datosBoss,w.getId(),w.getName(),w.getPassword(),w.getSurname(),w.getBossId());
+				this.dispose();
+				crW.setVisible(true);
+			}
 		}
-		
 	}
 
 }

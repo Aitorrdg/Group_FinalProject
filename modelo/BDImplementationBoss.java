@@ -71,7 +71,6 @@ public class BDImplementationBoss implements InterfaceBoss {
 			stmt.setString(3, worker.getBossId());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-
 		} finally {
 			closeConnection();
 		}
