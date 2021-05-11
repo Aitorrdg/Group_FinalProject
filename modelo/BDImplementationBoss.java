@@ -43,13 +43,15 @@ public class BDImplementationBoss implements InterfaceBoss {
 
 		openConnection();
 		try {
-			stmt = con.prepareStatement("select * from worker");
+			stmt = con.prepareStatement("select w.*,u.name,u.surname from worker w,user u where w.code=u.code");
 			rs = stmt.executeQuery();
 			while (rs.next()) {
 				worker = new Worker();
 				worker.setId(rs.getString("code"));
 				worker.setSalary(rs.getDouble("salary"));
 				worker.setBossId(rs.getString("code_b"));
+				worker.setName(rs.getString("name"));
+				worker.setSurname(rs.getString("surname"));
 				workers.add(worker);
 			}
 		} catch (SQLException e) {

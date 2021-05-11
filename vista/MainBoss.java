@@ -44,7 +44,7 @@ public class MainBoss extends JFrame implements ActionListener {
 		try {
 			workers = datosBoss.listWorkers();
 		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(this, e1);
+			JOptionPane.showMessageDialog(this,"ERROR WHILE LISTING THE WORKERS");
 		}
 		setResizable(false);
 		setForeground(new Color(238, 130, 238));
@@ -111,7 +111,7 @@ public class MainBoss extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnManageWorkers)) {
-			AddEditDeleteWindow aedw = new AddEditDeleteWindow(datosBoss, workers,boss);
+			AddEditDeleteWindow aedw = new AddEditDeleteWindow(datosBoss, workers);
 			this.dispose();
 			aedw.setVisible(true);
 		}
