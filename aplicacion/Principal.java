@@ -13,6 +13,7 @@ public class Principal {
 		//Pantalla inicial
 	//	MainBoss ventanaPrincipal = new MainBoss();
 		//ventanaPrincipal.setVisible(true);
+		//Hola
 	}
 
 }
