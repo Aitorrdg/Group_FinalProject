@@ -37,7 +37,7 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener{
 	private  String columnas[] = { "Code", "Name", "Surname", "Salary","Boss" };
 	private Set<Worker> workers;
 	private JPanel backPanel;
-
+	//Esto es un comentario de Prueba
 	public AddEditDeleteWindow(InterfaceBoss datosBoss, Set<Worker> workers) {
 		this.datosBoss=datosBoss;
 		this.workers=workers;
