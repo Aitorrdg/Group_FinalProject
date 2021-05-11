@@ -81,7 +81,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 	public void deleteWorker(String id) throws Exception {
 		openConnection();
 		try {
-			stmt = con.prepareStatement("delete * from worker where id=?");
+			stmt = con.prepareStatement("delete w.*,u.* from worker w,user u where w.code=? and w.code=u.code");
 			stmt.setString(1, id);
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -95,10 +95,11 @@ public class BDImplementationBoss implements InterfaceBoss {
 	public void modifyWorker(Worker worker) throws Exception {
 		openConnection();
 		try {
-			stmt = con.prepareStatement("update worker set code=?,salary=?,code_b=?");
-			stmt.setString(1, worker.getId());
-			stmt.setDouble(2, worker.getSalary());
-			stmt.setString(3, worker.getBossId());
+			stmt = con.prepareStatement("update worker w,user u set salary=?,name=?,surname=? where w.code=? and w.code=u.code");
+			stmt.setDouble(1, worker.getSalary());
+			stmt.setString(2,worker.getName());
+			stmt.setString(3, worker.getSurname());
+			stmt.setString(4,worker.getId());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 
@@ -115,14 +116,15 @@ public class BDImplementationBoss implements InterfaceBoss {
 
 		openConnection();
 		try {
-			stmt = con.prepareStatement("select * from worker where code=?");
+			stmt = con.prepareStatement("select w.*,u.name,u.surname from worker w,user u where w.code=? and w.code=u.code");
 			stmt.setString(1, id);
 			rs = stmt.executeQuery();
 			if (rs.next()) {
 				worker = new Worker();
 				worker.setId(rs.getString("code"));
 				worker.setSalary(rs.getDouble("salary"));
-				worker.setBossId(rs.getString("code_b"));
+				worker.setName(rs.getString("name"));
+				worker.setSurname(rs.getString("surname"));
 			}
 		} catch (SQLException e) {
 
@@ -215,13 +217,13 @@ public class BDImplementationBoss implements InterfaceBoss {
 		Timestamp  dateEnd = Timestamp.valueOf(service.getDate_time_end());
 		try {
 			stmt = con.prepareStatement(
-					"update service s,carry_out c set cod_service=?,code=?,price=?,date_time_start=?,date_time_end=?,finished=? where s.cod_service=c.cod_service");
-			stmt.setString(1, service.getCodeService());
-			stmt.setString(2, service.getWorkerId());
-			stmt.setDouble(3, service.getPrice());
-			stmt.setTimestamp(4,dateStart);
-			stmt.setTimestamp(5,dateEnd);
-			stmt.setBoolean(6, service.isFinished());
+					"update service s,carry_out c set code=?,price=?,date_time_start=?,date_time_end=?,finished=? where s.cod_service=c.cod_service and s.cod_service=?");
+			stmt.setString(1, service.getWorkerId());
+			stmt.setDouble(2, service.getPrice());
+			stmt.setTimestamp(3,dateStart);
+			stmt.setTimestamp(4,dateEnd);
+			stmt.setBoolean(5, service.isFinished());
+			stmt.setString(6, service.getCodeService());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 

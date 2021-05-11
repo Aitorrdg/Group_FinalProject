@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -83,7 +84,17 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener{
 				CrudWindow crW=new CrudWindow(datosBoss,w.getId(),w.getName(),w.getPassword(),w.getSurname(),w.getBossId());
 				this.dispose();
 				crW.setVisible(true);
+			}else {
+				JOptionPane.showMessageDialog(this,"This worker has already all the information");
 			}
+		}
+		if(e.getSource().equals(btnModify)) {
+			CrudWindow crW=new CrudWindow(datosBoss,w);
+			this.dispose();
+			crW.setVisible(true);
+		}
+		if(e.getSource().equals(btnDelete)) {
+			CrudWindow crW=new CrudWindow(w,datosBoss);
 		}
 	}
 
