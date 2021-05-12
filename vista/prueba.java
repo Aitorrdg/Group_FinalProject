@@ -15,8 +15,11 @@ public class prueba {
 	public static void main(String[] args) {
 		InterfaceBoss datosBoss=new BDImplementationBoss();
 		try {
-			Set<Worker> workers=datosBoss.listWorkers();
-			AddEditDeleteWindow aedW=new AddEditDeleteWindow(datosBoss, workers);
+			Set<Service> services=datosBoss.listServices();
+			for(Service s:services) {
+				System.out.println(s.getCodeService());
+			}
+			AddEditDeleteWindow aedW=new AddEditDeleteWindow(services,datosBoss);
 			aedW.setVisible(true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

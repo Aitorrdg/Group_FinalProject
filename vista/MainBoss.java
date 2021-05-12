@@ -13,6 +13,7 @@ import modelo.Boss;
 import modelo.InterfaceAdministrator;
 import modelo.InterfaceBoss;
 import modelo.InterfaceWorker;
+import modelo.Service;
 import modelo.User;
 import modelo.Worker;
 
@@ -35,16 +36,20 @@ public class MainBoss extends JFrame implements ActionListener {
 	private JButton btnManageWorkers;
 	private JButton btnManageServices;
 	private Set<Worker> workers;
+	private Set<Service>services;
 	private InterfaceBoss datosBoss;
-	private Boss boss;
-
-	public MainBoss(Boss b, InterfaceAdministrator datosUser, InterfaceBoss datosBoss) {
+	
+	public MainBoss(Boss b, InterfaceBoss datosBoss) {
 		this.datosBoss = datosBoss;
-		boss=b;
 		try {
 			workers = datosBoss.listWorkers();
 		} catch (Exception e1) {
 			JOptionPane.showMessageDialog(this,"ERROR WHILE LISTING THE WORKERS");
+		}
+		try {
+			services=datosBoss.listServices();
+		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(this,"ERROR WHILE LISTING THE SERVICES");
 		}
 		setResizable(false);
 		setForeground(new Color(238, 130, 238));
@@ -112,6 +117,11 @@ public class MainBoss extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnManageWorkers)) {
 			AddEditDeleteWindow aedw = new AddEditDeleteWindow(datosBoss, workers);
+			this.dispose();
+			aedw.setVisible(true);
+		}
+		if(e.getSource().equals(btnManageServices)) {
+			AddEditDeleteWindow aedw = new AddEditDeleteWindow(services,datosBoss);
 			this.dispose();
 			aedw.setVisible(true);
 		}

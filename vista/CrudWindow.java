@@ -14,6 +14,7 @@ import javax.swing.border.LineBorder;
 
 import modelo.Boss;
 import modelo.InterfaceBoss;
+import modelo.Service;
 import modelo.Worker;
 
 import java.awt.Font;
@@ -33,12 +34,17 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 	private JTextField textName;
 	private JTextField textSurname;
 	private JTextField textSalary;
-	private JButton btnModify;
+	private JButton btnModifyWorker;
 	private InterfaceBoss datosBoss;
 	private String idBoss;
 	private Worker worker;
 	private JButton btnConfirm;
-	private JButton btnDelete;
+	private JButton btnDeleteWorker;
+	private JTextField textCodeService;
+	private JTextField textWorkerCode;
+	private JTextField textPrice;
+	private JTextField textDescription;
+	private JButton btnModifyService;
 
 	public CrudWindow(InterfaceBoss datosBoss,String id, String name, String password, String surname,
 			String bossId) {
@@ -119,7 +125,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		btnConfirm.setBackground(Color.WHITE);
 		btnConfirm.setBounds(250, 147, 143, 31);
 		btnConfirm.addActionListener(this);
-		backPanel.add(btnModify);
+		backPanel.add(btnModifyWorker);
 	}
 
 	/**
@@ -188,13 +194,13 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textSalary.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textSalary);
 		
-		btnModify = new JButton("MODIFY");
-		btnModify.setFont(new Font("Arial", Font.BOLD, 14));
-		btnModify.setBorder(new LineBorder(new Color(109, 158, 235)));
-		btnModify.setBackground(Color.WHITE);
-		btnModify.setBounds(250, 147, 143, 31);
-		btnModify.addActionListener(this);
-		backPanel.add(btnModify);
+		btnModifyWorker = new JButton("MODIFY");
+		btnModifyWorker.setFont(new Font("Arial", Font.BOLD, 14));
+		btnModifyWorker.setBorder(new LineBorder(new Color(109, 158, 235)));
+		btnModifyWorker.setBackground(Color.WHITE);
+		btnModifyWorker.setBounds(250, 147, 143, 31);
+		btnModifyWorker.addActionListener(this);
+		backPanel.add(btnModifyWorker);
 	}
 
 	public CrudWindow(Worker w, InterfaceBoss datosBoss) {
@@ -263,13 +269,92 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textSalary.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textSalary);
 		
-		btnDelete = new JButton("DELETE");
-		btnDelete.setFont(new Font("Arial", Font.BOLD, 14));
-		btnDelete.setBorder(new LineBorder(new Color(109, 158, 235)));
-		btnDelete.setBackground(Color.WHITE);
-		btnDelete.setBounds(250, 147, 143, 31);
-		btnDelete.addActionListener(this);
-		backPanel.add(btnDelete);
+		btnDeleteWorker = new JButton("DELETE");
+		btnDeleteWorker.setFont(new Font("Arial", Font.BOLD, 14));
+		btnDeleteWorker.setBorder(new LineBorder(new Color(109, 158, 235)));
+		btnDeleteWorker.setBackground(Color.WHITE);
+		btnDeleteWorker.setBounds(250, 147, 143, 31);
+		btnDeleteWorker.addActionListener(this);
+		backPanel.add(btnDeleteWorker);
+	}
+
+	public CrudWindow(InterfaceBoss datosBoss, Service service) {
+		this.datosBoss=datosBoss;
+		setModal(true);
+		setResizable(false);
+		setForeground(new Color(238, 130, 238));
+		setBounds(100, 100, 501, 336);
+		borderPane = new JPanel();
+		borderPane.setBackground(new Color(109, 158, 235));
+		borderPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(borderPane);
+		borderPane.setLayout(null);
+		JPanel backPanel = new JPanel();
+		backPanel.setBounds(41, 48, 403, 201);
+		backPanel.setBackground(new Color(207, 226, 243));
+		borderPane.add(backPanel);
+		backPanel.setLayout(null);
+		
+		textCodeService = new JTextField();
+		textCodeService.setToolTipText("SERVICE CODE\r\n");
+		textCodeService.setHorizontalAlignment(SwingConstants.CENTER);
+		textCodeService.setForeground(Color.BLACK);
+		textCodeService.setFont(new Font("Arial", Font.PLAIN, 14));
+		textCodeService.setBounds(10, 21, 143, 31);
+		textCodeService.setBorder(new LineBorder(new Color(207, 226, 243)));
+		textCodeService.setEditable(false);
+		textCodeService.setText(service.getCodeService());
+		backPanel.add(textCodeService);
+		textCodeService.setColumns(10);
+		
+		textWorkerCode = new JTextField();
+		textWorkerCode.setToolTipText("ASSIGNED WORKER ID");
+		textWorkerCode.setHorizontalAlignment(SwingConstants.CENTER);
+		textWorkerCode.setForeground(Color.BLACK);
+		textWorkerCode.setFont(new Font("Arial", Font.PLAIN, 14));
+		textWorkerCode.setColumns(10);
+		textWorkerCode.setBounds(10, 63, 143, 31);
+		textWorkerCode.setBorder(new LineBorder(new Color(207, 226, 243)));
+		textWorkerCode.setText(service.getWorkerId());
+		backPanel.add(textWorkerCode);
+		
+		textDescription = new JTextField();
+		textDescription.setToolTipText("SERVICE DESCRIPTION\r\n");
+		textDescription.setForeground(Color.BLACK);
+		textDescription.setFont(new Font("Arial", Font.PLAIN, 14));
+		textDescription.setText(service.getDescription());
+		textDescription.setHorizontalAlignment(SwingConstants.CENTER);
+		textDescription.setColumns(10);
+		textDescription.setBounds(10, 105, 143, 31);
+		textDescription.setBorder(new LineBorder(new Color(207, 226, 243)));
+		backPanel.add(textDescription);
+		
+		textPrice = new JTextField();
+		textPrice.setToolTipText("SERVICE PRICE\r\n");
+		textPrice.setHorizontalAlignment(SwingConstants.CENTER);
+		textPrice.setText(String.valueOf(service.getPrice()));
+		textPrice.setForeground(Color.BLACK);
+		textPrice.setFont(new Font("Arial", Font.PLAIN, 14));
+		textPrice.setColumns(10);
+		textPrice.setBounds(10, 147, 143, 31);
+		textPrice.setBorder(new LineBorder(new Color(207, 226, 243)));
+		backPanel.add(textPrice);
+		
+		btnModifyService = new JButton("MODIFY");
+		btnModifyService.setFont(new Font("Arial", Font.BOLD, 14));
+		btnModifyService.setBorder(new LineBorder(new Color(109, 158, 235)));
+		btnModifyService.setBackground(Color.WHITE);
+		btnModifyService.setBounds(250, 147, 143, 31);
+		btnModifyService.addActionListener(this);
+		backPanel.add(btnModifyService);
+	}
+
+	public CrudWindow(InterfaceBoss datosBoss2) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public CrudWindow(Service service, InterfaceBoss datosBoss2) {
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -281,14 +366,14 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 			else 
 				JOptionPane.showMessageDialog(this,"PLEASE INSERT ALL THE INFORMATION");
 		}	
-		if(e.getSource().equals(btnModify)) {
+		if(e.getSource().equals(btnModifyWorker)) {
 			if(!textCode.getText().isEmpty()
 					&&!textName.getText().isEmpty()&&!textSurname.getText().isEmpty()&&!textSalary.getText().isEmpty())
 						modifyWorker();
 			else 
 				JOptionPane.showMessageDialog(this,"PLEASE INSERT ALL THE INFORMATION");
 		}
-		if(e.getSource().equals(btnDelete)) {
+		if(e.getSource().equals(btnDeleteWorker)) {
 			if(!textCode.getText().isEmpty()
 					&&!textName.getText().isEmpty()&&!textSurname.getText().isEmpty()&&!textSalary.getText().isEmpty())
 						deleteWorker();

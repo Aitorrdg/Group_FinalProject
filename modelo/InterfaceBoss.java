@@ -14,4 +14,5 @@ public interface InterfaceBoss {
 	public void deleteService(String cod_service)throws Exception;
 	public void modifyService(Service s)throws Exception;
 	public int calculateSeniority(LocalDate d)throws Exception;
+	public Service searchService(String code)throws Exception;
 }

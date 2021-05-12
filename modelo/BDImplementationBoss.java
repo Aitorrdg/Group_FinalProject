@@ -146,16 +146,17 @@ public class BDImplementationBoss implements InterfaceBoss {
 		openConnection();
 		try {
 			stmt = con.prepareStatement(
-					"select s.cod_service,s.code,s.price,date_time_start,date_time_end,s.finished from service s,carry_out c where s.cod_service=c.cod_service and s.code=c.code");
+					"select s.*,date_time_start,date_time_end from service s,carry_out c where s.cod_service=c.cod_service and s.code=c.code");
 			rs = stmt.executeQuery();
 			while (rs.next()) {
 				service = new Service();
-				service.setCodeService(rs.getString(1));
-				service.setWorkerId(rs.getString(2));
-				service.setPrice(rs.getDouble(3));
-				service.setDate_time_start(rs.getDate(4).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				service.setDate_time_end(rs.getDate(5).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
-				service.setFinished(rs.getBoolean(6));
+				service.setCodeService(rs.getString("cod_service"));
+				service.setWorkerId(rs.getString("code"));
+				service.setPrice(rs.getDouble("price"));
+				service.setDate_time_start(rs.getTimestamp("date_time_start").toLocalDateTime());
+				service.setDate_time_end(rs.getTimestamp("date_time_end").toLocalDateTime());
+				service.setFinished(rs.getBoolean("finished"));
+				service.setDescription(rs.getString("description"));
 				services.add(service);
 			}
 		} catch (SQLException e) {
@@ -239,6 +240,37 @@ public class BDImplementationBoss implements InterfaceBoss {
 	public int calculateSeniority(LocalDate d) throws Exception {
 		int seniority = d.getYear() - LocalDate.now().getYear();
 		return seniority;
+	}
+
+	@Override
+	public Service searchService(String code) throws Exception {
+		Service service = null ;
+		ResultSet rs = null;
+
+		openConnection();
+		try {
+			stmt = con.prepareStatement(
+					"select s.*,date_time_start,date_time_end from service s,carry_out c where s.cod_service=? and s.cod_service=c.cod_service and s.code=c.code ");
+			System.out.println(code);
+			stmt.setString(1, code);
+			rs = stmt.executeQuery();
+			if (rs.next()) {
+				service = new Service();
+				service.setCodeService(rs.getString("cod_service"));
+				service.setWorkerId(rs.getString("code"));
+				service.setPrice(rs.getDouble("price"));
+				service.setDate_time_start(rs.getTimestamp("date_time_start").toLocalDateTime());
+				service.setDate_time_end(rs.getTimestamp("date_time_end").toLocalDateTime());
+				service.setFinished(rs.getBoolean("finished"));
+				service.setDescription(rs.getString("description"));
+			}
+		} catch (SQLException e) {
+			
+		} finally {
+			closeConnection();
+			rs.close();
+		}
+		return service;
 	}
 
 }
