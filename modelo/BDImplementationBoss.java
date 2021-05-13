@@ -251,18 +251,17 @@ public class BDImplementationBoss implements InterfaceBoss {
 		try {
 			stmt = con.prepareStatement(
 					"select s.*,date_time_start,date_time_end from service s,carry_out c where s.cod_service=? and s.cod_service=c.cod_service and s.code=c.code ");
-			System.out.println(code);
-			stmt.setString(1, code);
+			stmt.setString(1,code);
 			rs = stmt.executeQuery();
 			if (rs.next()) {
 				service = new Service();
 				service.setCodeService(rs.getString("cod_service"));
 				service.setWorkerId(rs.getString("code"));
 				service.setPrice(rs.getDouble("price"));
-				service.setDate_time_start(rs.getTimestamp("date_time_start").toLocalDateTime());
-				service.setDate_time_end(rs.getTimestamp("date_time_end").toLocalDateTime());
 				service.setFinished(rs.getBoolean("finished"));
 				service.setDescription(rs.getString("description"));
+				service.setDate_time_start(rs.getTimestamp("date_time_start").toLocalDateTime());
+				service.setDate_time_end(rs.getTimestamp("date_time_end").toLocalDateTime());
 			}
 		} catch (SQLException e) {
 			

@@ -16,9 +16,6 @@ public class prueba {
 		InterfaceBoss datosBoss=new BDImplementationBoss();
 		try {
 			Set<Service> services=datosBoss.listServices();
-			for(Service s:services) {
-				System.out.println(s.getCodeService());
-			}
 			AddEditDeleteWindow aedW=new AddEditDeleteWindow(services,datosBoss);
 			aedW.setVisible(true);
 		} catch (Exception e) {

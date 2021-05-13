@@ -153,10 +153,10 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 			for (Service s : services) {
 				listServices.add(s);
 			}
-			information[i][0] = "  " + listServices.get(i).getCodeService();
-			information[i][1] = "     " + listServices.get(i).getWorkerId();
-			information[i][2] = "     " + listServices.get(i).getDescription();
-			information[i][3] = "     " + String.valueOf(listServices.get(i).getPrice());
+			information[i][0] = listServices.get(i).getCodeService();
+			information[i][1] = listServices.get(i).getWorkerId();
+			information[i][2] = listServices.get(i).getDescription();
+			information[i][3] = String.valueOf(listServices.get(i).getPrice());
 			information[i][4] = "" + listServices.get(i).getDate_time_start();
 			information[i][5] = "" + listServices.get(i).getDate_time_end();
 			information[i][6] = "" + listServices.get(i).isFinished();
