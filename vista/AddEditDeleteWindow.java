@@ -295,7 +295,6 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 				try {
 					String code = tableService.getValueAt(fila, columna).toString();
 					service = datosBoss.searchService(code);
-					System.out.println(service.getCodeService());
 					btnAddService.setEnabled(false);
 					btnDeleteService.setEnabled(true);
 					btnModifyService.setEnabled(true);

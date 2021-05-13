@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeListener;
 
 import modelo.Boss;
 import modelo.InterfaceBoss;
@@ -22,9 +23,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 
 import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
+import javax.swing.JSpinner;
+import javax.swing.JLabel;
 
 public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 
@@ -45,6 +54,9 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 	private JTextField textPrice;
 	private JTextField textDescription;
 	private JButton btnModifyService;
+	private JSpinner spinnerDateStart;
+	private JSpinner spinnerDateEnd;
+	private JLabel lblDateEnd;
 
 	public CrudWindow(InterfaceBoss datosBoss,String id, String name, String password, String surname,
 			String bossId) {
@@ -201,6 +213,8 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		btnModifyWorker.setBounds(250, 147, 143, 31);
 		btnModifyWorker.addActionListener(this);
 		backPanel.add(btnModifyWorker);
+		
+		
 	}
 
 	public CrudWindow(Worker w, InterfaceBoss datosBoss) {
@@ -347,6 +361,32 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		btnModifyService.setBounds(250, 147, 143, 31);
 		btnModifyService.addActionListener(this);
 		backPanel.add(btnModifyService);
+		
+		JLabel lblDateStart = new JLabel("DATE TIME START:");
+		lblDateStart.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 11));
+		lblDateStart.setBounds(251, 26, 125, 14);
+		backPanel.add(lblDateStart);
+		
+		spinnerDateStart = new JSpinner(new SpinnerDateModel());
+		spinnerDateStart.setFont(new Font("Arial", Font.BOLD, 11));
+		spinnerDateStart.setBounds(250, 47, 143, 20);
+		JSpinner.DateEditor timeEditorStart = new JSpinner.DateEditor(spinnerDateStart, "HH:mm:ss dd/MM/yyyy");
+		spinnerDateStart.setEditor(timeEditorStart);
+		spinnerDateStart.setValue(new Date(Timestamp.valueOf(service.getDate_time_start()).getTime()));
+		backPanel.add(spinnerDateStart);
+		
+		spinnerDateEnd = new JSpinner(new SpinnerDateModel());
+		spinnerDateEnd.setFont(new Font("Arial", Font.BOLD, 11));
+		spinnerDateEnd.setBounds(250, 111, 143, 20);
+		JSpinner.DateEditor timeEditorEnd = new JSpinner.DateEditor(spinnerDateEnd, "HH:mm:ss dd/MM/yyyy");
+		spinnerDateEnd.setEditor(timeEditorEnd);
+		spinnerDateEnd.setValue(new Date(Timestamp.valueOf(service.getDate_time_end()).getTime()));
+		backPanel.add(spinnerDateEnd);
+		
+		lblDateEnd = new JLabel("SERVICE  TIME END:");
+		lblDateEnd.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 11));
+		lblDateEnd.setBounds(250, 86, 156, 14);
+		backPanel.add(lblDateEnd);
 	}
 
 	public CrudWindow(InterfaceBoss datosBoss2) {
@@ -369,7 +409,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		if(e.getSource().equals(btnModifyWorker)) {
 			if(!textCode.getText().isEmpty()
 					&&!textName.getText().isEmpty()&&!textSurname.getText().isEmpty()&&!textSalary.getText().isEmpty())
-						modifyWorker();
+						modifyService();
 			else 
 				JOptionPane.showMessageDialog(this,"PLEASE INSERT ALL THE INFORMATION");
 		}
@@ -380,6 +420,24 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 			else 
 				JOptionPane.showMessageDialog(this,"PLEASE INSERT ALL THE INFORMATION");
 		}
+		if(e.getSource().equals(btnModifyService)) {
+			if(!textCodeService.getText().isEmpty()
+					&&!textDescription.getText().isEmpty()&&!textPrice.getText().isEmpty()&&!textWorkerCode.getText().isEmpty())
+						modifyWorker();
+			else 
+				JOptionPane.showMessageDialog(this,"PLEASE INSERT ALL THE INFORMATION");
+		}
+	}
+
+	private void modifyService() {
+		Service service=new Service();
+		service.setCodeService(textCodeService.getText());
+		service.setWorkerId(textWorkerCode.getText());
+		service.setPrice(Double.parseDouble(textPrice.getText()));
+		service.setDescription(textDescription.getText());
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+		service.setDate_time_start(LocalDateTime.parse(spinnerDateStart.getValue().toString(),formatter));
+		service.setDate_time_end(LocalDateTime.parse(spinnerDateEnd.getValue().toString(),formatter));
 	}
 
 	private void deleteWorker() {
@@ -454,5 +512,4 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		}
 		
 	}
-
 }
