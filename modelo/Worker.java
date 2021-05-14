@@ -11,8 +11,9 @@ public class Worker extends User{
 	
 	//Constructor
 	
-	public Worker(String id, String password, String name, String surname, char type, double salary) {
+	public Worker(String id, String password, String name, String surname ,String bossId, double salary,char type) {
 		super(id, password, name, surname, type);
+		this.bossId=bossId;
 		this.salary = salary;
 	}
 
@@ -20,13 +21,13 @@ public class Worker extends User{
 		super(id, password, name, surname, type);
 	}
 	
-	public Worker() {
-	
-	}
-	
-
 	//Getters and Setters
 	
+	
+	public Worker() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public double getSalary() {
 		return salary;
 	}
@@ -50,6 +51,4 @@ public class Worker extends User{
 	public void setSalary(double salary) {
 		this.salary = salary;
 	}
-
-	
 }
