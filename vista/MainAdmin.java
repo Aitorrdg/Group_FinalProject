@@ -38,6 +38,8 @@ public class MainAdmin extends JDialog implements ActionListener {
 		setResizable(false);
 		setModal(b);
 		this.data = data;
+		
+		
 		getContentPane().setBackground(new Color(109, 158, 235));
 		setBounds(100, 100, 966, 675);
 		getContentPane().setLayout(null);

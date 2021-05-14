@@ -7,10 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class BDImplementationAdmin implements InterfaceAdministrator {
+
+	// To check Git hub
 
 	private Connection con;
 	private PreparedStatement stmt;
@@ -20,11 +22,14 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 	final String InsertBoss = "INSERT INTO boss (code, seniority, speciality,joiningdate) VALUES (?, ?, ?,?)";
 	final String GetUserList = "SELECT * FROM userup";
 	final String DeleteUser = "DELETE FROM userup WHERE code = ?";
-	final String SeachUser = "SELECT * FROM userup WHERE code = ?";
+	final String SearchUser = "SELECT * FROM userup WHERE code = ?";
+	final String SearchBoss = "SELECT name, surname,password ,type, seniority, speciality, joiningdate FROM boss b, userup u  where u.code=? and u.code=b.code ";
 	final String ModifyUser = "UPDATE userup SET code=?, password=?,name=?,surname=?,type=? where code=?";
-	//final String ModifyBoss = "UPDATE boss b , userup u  SET u.code=? password=?,name=?,surname=?,type=? b.code=?, seniority=?, speciality=?,joiningdate=? where b.code=? and u.code=?";
+	// final String ModifyBoss = "UPDATE boss b , userup u SET u.code=?
+	// password=?,name=?,surname=?,type=? b.code=?, seniority=?,
+	// speciality=?,joiningdate=? where b.code=? and u.code=?";
 	final String ModifyBoss = "UPDATE boss b , userup u  SET u.code=?, password=?,name=?,surname=?,type=?, b.code=?, seniority=?, speciality=?,joiningdate=? where b.code=u.code and u.code=?";
-	
+
 	private void openConnection() {
 		try {
 			String url = "jdbc:mysql://localhost:3306/cleaning_service?serverTimezone=Europe/Madrid&useSSL=false";
@@ -46,45 +51,50 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 	@Override
 	public User searchUser(String id) throws Exception {
 		ResultSet rs = null;
+		ResultSet rsB= null;
 		User u = null;
+		User uB= null;
 		this.openConnection();
 
-		try {
-			stmt = con.prepareStatement(SeachUser);
-			stmt.setString(1, id);
-			rs = stmt.executeQuery();
-
-			if (rs.next()) {
-				u = new User();
+		stmt = con.prepareStatement(SearchUser);
+		stmt.setString(1, id);
+		rs = stmt.executeQuery();
+		if (rs.next()) {
+			u = new User();
+			u.setType(rs.getString("Type").charAt(0));
+			if (u.getType()=='B') {
+				stmt = con.prepareStatement(SearchBoss);
+				stmt.setString(1, id);
+				rsB = stmt.executeQuery();
+				if(rsB.next()) {
+					uB = new Boss();
+					uB.setId(id);
+					uB.setName(rsB.getString("name"));
+					uB.setSurname(rsB.getString("surname"));
+					uB.setPassword(rsB.getString("password"));
+					uB.setType(rsB.getString("type").charAt(0));
+					((Boss)uB).setJoiningDate(rsB.getTimestamp("joiningdate").toLocalDateTime());
+					((Boss)uB).setSeniority(rsB.getInt("seniority"));
+				
+					((Boss)uB).setSpeciality(rsB.getString("speciality"));
+					
+					u= uB;
+				}
+				
+			}else {
+				
 				u.setId(id);
 				u.setName(rs.getString("name"));
 				u.setSurname(rs.getString("surname"));
 				u.setPassword(rs.getString("password"));
 				u.setType(rs.getString("type").charAt(0));
-
-			} else
-				u = null;
-		} catch (SQLException e) {
-			System.out.println("SQL error");
-			e.printStackTrace();
-		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-					System.out.println("Error occured while closing ResultSet");
-				}
-			}
-			try {
-				this.closeConnection();
-			} catch (SQLException e) {
-				System.out.println("An error occured while closing Database");
-				e.printStackTrace();
 			}
 		}
 
 		return u;
+
 	}
+
 
 	@Override
 	public User addUser(User u) throws Exception {
@@ -93,7 +103,7 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 
 		try {
 			stmt = con.prepareStatement(InsertUser);
-			stmtBoss= con.prepareStatement(InsertBoss);
+			stmtBoss = con.prepareStatement(InsertBoss);
 
 			stmt.setString(1, u.getId());
 			stmt.setString(2, u.getPassword());
@@ -108,7 +118,7 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 				stmtBoss.setString(4, ((Boss) u).getJoiningDate().toString());
 				stmtBoss.executeUpdate();
 			}
-			
+
 		} catch (SQLException e) {
 			System.out.println("Error occured while inserting data in database");
 			e.printStackTrace();
@@ -150,7 +160,7 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 	public ArrayList<User> listUser() throws Exception {
 		ResultSet rs = null;
 		User user;
-	
+
 		ArrayList<User> users = new ArrayList<User>();
 		this.openConnection();
 		try {
@@ -164,9 +174,9 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 				user.setPassword(rs.getString("password"));
 				user.setType(rs.getString("type").charAt(0));
 				users.add(user);
-				
+
 			}
-			
+
 		} catch (SQLException e) {
 			System.out.println("SQL error");
 			e.printStackTrace();
@@ -185,17 +195,16 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 	@Override
 	public User modifyUser(User u) throws Exception {
 		this.openConnection();
-		User n;
-		n = new User();
-		User b ;
-		b= new User();
+
+		User b;
+		b = new User();
 		try {
-			//n=searchUser(u.getId());
-			
+			// n=searchUser(u.getId());
+
 //			final String ModifyBoss = "UPDATE boss b , userup u  SET u.code=? password=?,name=?,surname=?,type=? b.code=?, seniority=?, speciality=?,joiningdate=? where b.code=u.code and u.code=?";
 			long milliSeconds = Timestamp.valueOf(((Boss) u).getJoiningDate()).getTime();
-			Date joiningDate=new Date(milliSeconds);
-			if(u.getType()=='B') {
+			Date joiningDate = new Date(milliSeconds);
+			if (u.getType() == 'B') {
 				stmt = con.prepareStatement(ModifyBoss);
 				stmt.setString(1, u.getId());
 				stmt.setString(2, u.getPassword());
@@ -205,27 +214,22 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 				stmt.setString(6, u.getId());
 				stmt.setInt(7, ((Boss) u).getSeniority());
 				stmt.setString(8, ((Boss) u).getSpeciality());
-				stmt.setDate(9,joiningDate);
+				stmt.setDate(9, joiningDate);
 				stmt.setString(10, u.getId());
 				stmt.executeUpdate();
-				
-			}else {
-				
+
+			} else {
+				b = null;
 			}
-			
-			
-			
+
 		} catch (SQLException e1) {
 			System.out.println("An error occured while updating");
 			e1.printStackTrace();
 		} finally {
-			
-				this.closeConnection();
-			
-				
-				
+
+			this.closeConnection();
+
 		}
-		
 
 		return b;
 	}

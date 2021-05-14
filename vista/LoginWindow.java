@@ -21,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 
 import modelo.Boss;
 import modelo.InterfaceAdministrator;
+import modelo.TextPrompt;
 import modelo.User;
 import modelo.Worker;
 import javax.swing.JCheckBox;
@@ -41,11 +42,16 @@ public class LoginWindow extends JFrame implements ActionListener {
 	private JButton btnLogin;
 	private InterfaceAdministrator data;
 	private JTextField textFieldUser;
+	private TextPrompt placeholder;
 
 	public LoginWindow(InterfaceAdministrator data) {
 		this.data = data;
 		setTitle("Login");
 		setResizable(false);
+		
+		
+		
+		
 		setForeground(new Color(238, 130, 238));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 717, 524);
@@ -72,6 +78,7 @@ public class LoginWindow extends JFrame implements ActionListener {
 		passwordField.setFont(new Font("Arial", Font.BOLD, 20));
 		borderPanel.add(passwordField);
 		passwordField.addActionListener(this);
+		placeholder = new TextPrompt("Password", passwordField);
 
 		comboBoxUserType = new JComboBox<>();
 		comboBoxUserType.setBounds(116, 154, 394, 31);
@@ -95,6 +102,10 @@ public class LoginWindow extends JFrame implements ActionListener {
 		textFieldUser.setFont(new Font("Arial", Font.BOLD, 20));
 		borderPanel.add(textFieldUser);
 		textFieldUser.setColumns(10);
+		placeholder = new TextPrompt("Username", textFieldUser);
+		placeholder.changeAlpha(0.75f);
+		placeholder.setFont(new Font("Arial", Font.ITALIC, 10));
+		
 		
 		JCheckBox chckbxShowPassword = new JCheckBox("Show password");
 		chckbxShowPassword.addActionListener(new ActionListener() {
@@ -109,6 +120,11 @@ public class LoginWindow extends JFrame implements ActionListener {
 		chckbxShowPassword.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 10));
 		chckbxShowPassword.setBounds(387, 305, 122, 21);
 		borderPanel.add(chckbxShowPassword);
+		
+		
+		
+		
+		
 		textFieldUser.addKeyListener((KeyListener) new KeyAdapter() {
 			@SuppressWarnings("deprecation")
 			public void keyReleased(KeyEvent e) {
@@ -125,7 +141,11 @@ public class LoginWindow extends JFrame implements ActionListener {
 		comboBoxUserType.addItem("Admin");
 		comboBoxUserType.addItem("Boss");
 		comboBoxUserType.addItem("Worker");
+		
+		
 	}
+	
+	
 
 	@Override
 	public void actionPerformed(ActionEvent a) {
