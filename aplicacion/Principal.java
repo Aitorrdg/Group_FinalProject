@@ -1,19 +1,27 @@
 package aplicacion;
 
 
-import vista.MainBoss;
+import modelo.BDImplementationAdmin;
+import modelo.InterfaceAdministrator;
+import vista.LoginWindow;
 
 
 public class Principal {
 
 	public static void main(String[] args) {
-		// 
-	//	CochePropietarioControlador datos = new CochePropietarioControladorBDImplementation();
-		
-		//Pantalla inicial
-	//	MainBoss ventanaPrincipal = new MainBoss();
-		//ventanaPrincipal.setVisible(true);
-		//Hola
+	
+		InterfaceAdministrator data = new BDImplementationAdmin();
+		LoginWindow ventanaPrincipal = new LoginWindow(data);
+		ventanaPrincipal.setVisible(true);
+//		User u =new User();
+//		u.setId("y7397195h");
+//		try {
+//			u=data.searchUser(u.getId());
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		System.out.println(u.getId()+" "+u.getName());
 	}
 
 }

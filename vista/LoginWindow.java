@@ -18,7 +18,6 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 import modelo.Boss;
 import modelo.InterfaceAdministrator;
@@ -62,7 +61,7 @@ public class LoginWindow extends JFrame implements ActionListener {
 		borderPanel.setLayout(null);
 
 		lblSelectType = new JLabel("Please select your user type:");
-		lblSelectType.setBounds(59, 80, 522, 45);
+		lblSelectType.setBounds(68, 78, 522, 45);
 		lblSelectType.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSelectType.setFont(new Font("Arial", Font.BOLD, 30));
 		borderPanel.add(lblSelectType);
@@ -70,33 +69,30 @@ public class LoginWindow extends JFrame implements ActionListener {
 		passwordField = new JPasswordField();
 		passwordField.setBounds(116, 268, 394, 31);
 		passwordField.setToolTipText("Insert your password");
-		passwordField.setFont(new Font("Tahoma", Font.BOLD, 20));
+		passwordField.setFont(new Font("Arial", Font.BOLD, 20));
 		borderPanel.add(passwordField);
 		passwordField.addActionListener(this);
 
 		comboBoxUserType = new JComboBox<>();
 		comboBoxUserType.setBounds(116, 154, 394, 31);
-		comboBoxUserType.setFont(new Font("Tahoma", Font.BOLD, 20));
+		comboBoxUserType.setFont(new Font("Arial", Font.BOLD, 20));
 		borderPanel.add(comboBoxUserType);
 
 		btnLogin = new JButton("Login");
 		btnLogin.setBounds(116, 340, 141, 38);
 		btnLogin.setFont(new Font("Arial", Font.BOLD, 16));
-		btnLogin.setBackground(Color.white);
-		btnLogin.setBorder(new LineBorder(new Color(109, 158, 235)));
 		borderPanel.add(btnLogin);
 		btnLogin.addActionListener(this);
 
 		btnClose = new JButton("Close");
 		btnClose.setBounds(369, 340, 141, 38);
-		btnClose.setBackground(Color.white);
 		btnClose.setFont(new Font("Arial", Font.BOLD, 16));
 		borderPanel.add(btnClose);
 
 		textFieldUser = new JTextField();
 		textFieldUser.setBounds(116, 212, 393, 31);
 		textFieldUser.setToolTipText("Insert your username");
-		textFieldUser.setFont(new Font("Tahoma", Font.BOLD, 20));
+		textFieldUser.setFont(new Font("Arial", Font.BOLD, 20));
 		borderPanel.add(textFieldUser);
 		textFieldUser.setColumns(10);
 		
@@ -146,8 +142,22 @@ public class LoginWindow extends JFrame implements ActionListener {
 	@SuppressWarnings("deprecation")
 	private void login(InterfaceAdministrator data, ActionEvent a) {
 
+//		 String cmd = a.getActionCommand();
+//		 char [] password = {'a','b','c','d','*','1','2','3','4'};
+//		 
+//		 if(OK.equals(cmd)) {
+//			 char[] input = passwordField.getPassword();
+//			 if(input.equals(password)) {
+//				 AdminWindow aw = new AdminWindow(this,true,data);
+//					aw.setVisible(true);
+//			 }
+//			 else {
+//					JOptionPane.showMessageDialog(this, "Incorrect Password");
+//				}
+//		 }
+
 		if ((comboBoxUserType.getSelectedItem().toString().equalsIgnoreCase("Admin"))) {
-			if (passwordField.getText().equals("abcd*1234") && textFieldUser.getText().equalsIgnoreCase("123456789")) {
+			if (passwordField.getText().equals("1") && textFieldUser.getText().equalsIgnoreCase("1")) {
 				MainAdmin aw = new MainAdmin(this, true, data);
 				this.dispose();
 				aw.setVisible(true);
@@ -162,7 +172,7 @@ public class LoginWindow extends JFrame implements ActionListener {
 			try {
 				u = data.searchUser(nId);
 				if (u.getType() == 'B' && u.getId().equalsIgnoreCase(nId) && u.getPassword().equals(nPassword)) {
-
+				// MainBoss mb = new MainBoss(this, true)
 				} else {
 					JOptionPane.showMessageDialog(this, "Incorrect Username or Password");
 				}
@@ -178,7 +188,7 @@ public class LoginWindow extends JFrame implements ActionListener {
 			try {
 				w = data.searchUser(nId);
 				if (w.getType() == 'W' && w.getId().equalsIgnoreCase(nId) && w.getPassword().equals(nPassword)) {
-
+					//MainWorker mw = new MainWorker(this, true)
 				} else {
 					JOptionPane.showMessageDialog(this, "Incorrect Username or Password");
 				}
