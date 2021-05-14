@@ -430,14 +430,26 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 	}
 
 	private void modifyService() {
-		Service service=new Service();
-		service.setCodeService(textCodeService.getText());
-		service.setWorkerId(textWorkerCode.getText());
-		service.setPrice(Double.parseDouble(textPrice.getText()));
-		service.setDescription(textDescription.getText());
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
-		service.setDate_time_start(LocalDateTime.parse(spinnerDateStart.getValue().toString(),formatter));
-		service.setDate_time_end(LocalDateTime.parse(spinnerDateEnd.getValue().toString(),formatter));
+		
+		int reply=JOptionPane.showConfirmDialog(this,"ARE YOU SURE THAT YOU WANT TO MODIFY THIS SERVICE?","CONFIRMATION WINDOW",JOptionPane.YES_NO_OPTION);
+		if(reply == JOptionPane.YES_OPTION) {
+			try {
+				Service service=new Service();
+				service.setCodeService(textCodeService.getText());
+				service.setWorkerId(textWorkerCode.getText());
+				service.setPrice(Double.parseDouble(textPrice.getText()));
+				service.setDescription(textDescription.getText());
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+				service.setDate_time_start(LocalDateTime.parse(spinnerDateStart.getValue().toString(),formatter));
+				service.setDate_time_end(LocalDateTime.parse(spinnerDateEnd.getValue().toString(),formatter));
+				datosBoss.modifyService(service);
+				this.dispose();
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(this, e);
+			}
+		}else {
+			this.dispose();
+		}
 	}
 
 	private void deleteWorker() {
