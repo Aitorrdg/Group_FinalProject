@@ -1,7 +1,7 @@
 package aplicacion;
 
 
-import vista.MainBoss;
+//import vista.MainBoss;
 
 
 public class Principal {

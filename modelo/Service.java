@@ -10,6 +10,7 @@ public class Service {
 	private LocalDateTime date_time_start;
 	private LocalDateTime date_time_end;
 	private boolean finished;
+	private String descrip;
 	
 	//Constructor
 	
@@ -70,6 +71,12 @@ public class Service {
 	}
 	public void setFinished(boolean finished) {
 		this.finished = finished;
+	}
+	public String getDescrip() {
+		return descrip;
+	}
+	public void setDescrip(String descrip) {
+		this.descrip = descrip;
 	}
 	
 	

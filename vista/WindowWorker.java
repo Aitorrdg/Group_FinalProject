@@ -50,7 +50,6 @@ public class WindowWorker extends JDialog implements ActionListener {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(WindowWorker.class.getResource("/img/Cleaning Service.png")));
 		this.data = data;
 		this.wo = wo;
-		this.wo = wo;
 		setBounds(100, 100, 870, 633);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
