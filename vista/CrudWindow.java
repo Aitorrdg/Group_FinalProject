@@ -28,6 +28,7 @@ import java.awt.event.FocusListener;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -47,7 +48,7 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 	private JTextField textCode;
 	private JTextField textName;
 	private JTextField textSurname;
-	private JTextField textSalary;
+	private JFormattedTextField textSalary;
 	private JButton btnModifyWorker;
 	private InterfaceBoss datosBoss;
 	private String idBoss;
@@ -56,7 +57,7 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 	private JButton btnDeleteWorker;
 	private JTextField textCodeService;
 	private JTextField textWorkerCode;
-	private JTextField textPrice;
+	private JFormattedTextField textPrice;
 	private JTextField textDescription;
 	private JButton btnModifyService;
 	private JSpinner spinnerDateStart;
@@ -65,6 +66,7 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 	private JButton btnDeleteService;
 	private Service service;
 	private JButton btnAddService;
+	private NumberFormat decimalFormat=new DecimalFormat("####.##");
 
 	public CrudWindow(InterfaceBoss datosBoss, String id, String name, String password, String surname, String bossId) {
 		idBoss = bossId;
@@ -119,12 +121,9 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		textSurname.setEditable(false);
 		textSurname.setText(surname);
 		backPanel.add(textSurname);
-		try {
-			textSalary = new JFormattedTextField(new MaskFormatter("####.##"));
-		} catch (ParseException e) {
-			JOptionPane.showMessageDialog(this, e);
-		}
-		textSalary.setToolTipText("INTRODUCE WORKER SALARY\r\n");
+		
+		textSalary=new JFormattedTextField(decimalFormat);
+		textSalary.setToolTipText("INTRODUCE WORKER SALARY,ONLY NUMBERS ACCEPTED\r\n");
 		textSalary.setHorizontalAlignment(SwingConstants.CENTER);
 		textSalary.setText("0000.00");
 		textSalary.setForeground(Color.LIGHT_GRAY);
@@ -198,12 +197,9 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		textSurname.setBounds(10, 105, 143, 31);
 		textSurname.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textSurname);
-		try {
-			textSalary = new JFormattedTextField(new MaskFormatter("####.##"));
-		} catch (ParseException e) {
-			JOptionPane.showMessageDialog(this, e);
-		}
-		textSalary.setToolTipText("INTRODUCE WORKER SALARY\r\n");
+
+		textSalary=new JFormattedTextField(decimalFormat);
+		textSalary.setToolTipText("INTRODUCE WORKER SALARY,ONLY NUMBERS ACCEPTED\r\n");
 		textSalary.setHorizontalAlignment(SwingConstants.CENTER);
 		textSalary.setText(String.valueOf(worker.getSalary()));
 		textSalary.setForeground(Color.BLACK);
@@ -276,12 +272,9 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		textSurname.setEditable(false);
 		textSurname.setText(worker.getSurname());
 		backPanel.add(textSurname);
-		try {
-			textSalary = new JFormattedTextField(new MaskFormatter("####.##"));
-		} catch (ParseException e) {
-			JOptionPane.showMessageDialog(this, e);
-		}
-		textSalary.setToolTipText("INTRODUCE WORKER SALARY\r\n");
+		
+		textSalary=new JFormattedTextField(decimalFormat);
+		textSalary.setToolTipText("INTRODUCE WORKER SALARY,ONLY NUMBERS ACCEPTED\r\n");
 		textSalary.setHorizontalAlignment(SwingConstants.CENTER);
 		textSalary.setText(String.valueOf(worker.getSalary()));
 		textSalary.setForeground(Color.LIGHT_GRAY);
@@ -351,12 +344,9 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		textDescription.setBounds(10, 105, 143, 31);
 		textDescription.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textDescription);
-		try {
-			textPrice = new JFormattedTextField(new MaskFormatter("####.##"));
-		} catch (ParseException e) {
-			JOptionPane.showMessageDialog(this, e);
-		}
-		textPrice.setToolTipText("SERVICE PRICE\r\n");
+		
+		textPrice=new JFormattedTextField(decimalFormat);
+		textPrice.setToolTipText("SERVICE PRICE,ONLY NUMBERS ACCEPTED\r\n");
 		textPrice.setHorizontalAlignment(SwingConstants.CENTER);
 		textPrice.setText(String.valueOf(service.getPrice()));
 		textPrice.setForeground(Color.BLACK);
@@ -455,12 +445,9 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		textDescription.setBorder(new LineBorder(new Color(207, 226, 243)));
 		textDescription.addFocusListener(this);
 		backPanel.add(textDescription);
-		try {
-			textPrice = new JFormattedTextField(new MaskFormatter("####.##"));
-		} catch (ParseException e) {
-			JOptionPane.showMessageDialog(this, e);
-		}
-		textPrice.setToolTipText("SERVICE PRICE\r\n");
+			
+		textPrice = new JFormattedTextField(decimalFormat);
+		textPrice.setToolTipText("SERVICE PRICE,ONLY NUMBERS ACCEPTED\r\n");
 		textPrice.setHorizontalAlignment(SwingConstants.CENTER);
 		textPrice.setText("0000.00");
 		textPrice.setForeground(Color.LIGHT_GRAY);
@@ -563,12 +550,8 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		textDescription.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textDescription);
 
-		try {
-			textPrice = new JFormattedTextField(new MaskFormatter("####.##"));
-		} catch (ParseException e) {
-			JOptionPane.showMessageDialog(this, e);
-		}
-		textPrice.setToolTipText("SERVICE PRICE\r\n");
+		textPrice=new JFormattedTextField(decimalFormat);
+		textPrice.setToolTipText("SERVICE PRICE,ONLY NUMBERS ACCEPTED\r\n");
 		textPrice.setHorizontalAlignment(SwingConstants.CENTER);
 		textPrice.setText(String.valueOf(service.getPrice()));
 		textPrice.setForeground(Color.BLACK);
@@ -767,7 +750,7 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		worker.setId(textCode.getText());
 		worker.setName(textName.getText());
 		worker.setPassword(textSurname.getText());
-		worker.setSalary(Double.parseDouble(textSalary.getText()));
+		worker.setSalary(Double.parseDouble((String) textSalary.getValue()));
 		worker.setBossId(idBoss);
 		worker.setType('W');
 		try {
