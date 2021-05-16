@@ -161,7 +161,26 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 			information[i][5] = "" + listServices.get(i).getDate_time_end();
 			information[i][6] = "" + listServices.get(i).isFinished();
 		}
-		tableService = new JTable(information, columnasService);
+		tableService = new JTable(information, columnasService){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			//***********************METODO PARA HACER QUE LA TABLA NO SEA EDITABLE, Y ASI HACER DOBLE CLICK************************************
+			//Para ello sobreescribimos el metodo que ya tiene la clase JTable.isCellEditable
+			public boolean isCellEditable(int row, int column) 
+			{
+				for(int i=0;i<tableService.getRowCount();i++)
+				{
+					if(row==i) 
+					{
+						return false;
+					}
+				}
+				return true;
+			}
+		};
 		tableService.setEnabled(true);
 		resizeColummWidth(tableService);
 		tableService.setSelectionBackground(new Color(109, 158, 235));
@@ -209,7 +228,25 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 			information[i][3] = "     " + String.valueOf(listWorkers.get(i).getSalary());
 			information[i][4] = "  " + listWorkers.get(i).getBossId();
 		}
-		tableWorkers = new JTable(information, columnasWorker);
+		tableWorkers = new JTable(information, columnasWorker) {	/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				//***********************METODO PARA HACER QUE LA TABLA NO SEA EDITABLE, Y ASI HACER DOBLE CLICK************************************
+				//Para ello sobreescribimos el metodo que ya tiene la clase JTable.isCellEditable
+				public boolean isCellEditable(int row, int column) 
+				{
+					for(int i=0;i<tableWorkers.getRowCount();i++)
+					{
+						if(row==i) 
+						{
+							return false;
+						}
+					}
+					return true;
+				}
+			};
 		tableWorkers.setEnabled(true);
 		tableWorkers.setSelectionBackground(new Color(109, 158, 235));
 		tableWorkers.setSelectionForeground(Color.WHITE);
@@ -252,13 +289,9 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 			crW.setVisible(true);
 		}
 		if (e.getSource().equals(btnAddService)) {
-			if (worker.getSalary() == 0) {
 				CrudWindow crW = new CrudWindow(datosBoss);
 				this.dispose();
 				crW.setVisible(true);
-			} else {
-				JOptionPane.showMessageDialog(this, "This worker has already all the information");
-			}
 		}
 		if (e.getSource().equals(btnModifyService)) {
 			CrudWindow crW = new CrudWindow(datosBoss, service);

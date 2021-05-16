@@ -6,12 +6,14 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.MaskFormatter;
 
 import modelo.Boss;
 import modelo.InterfaceBoss;
@@ -25,6 +27,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,7 +40,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JSpinner;
 import javax.swing.JLabel;
 
-public class CrudWindow extends JDialog implements ActionListener,FocusListener{
+public class CrudWindow extends JDialog implements ActionListener, FocusListener {
 
 	private final JPanel contentPanel = new JPanel();
 	private JPanel borderPane;
@@ -48,7 +52,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 	private InterfaceBoss datosBoss;
 	private String idBoss;
 	private Worker worker;
-	private JButton btnConfirm;
+	private JButton btnAddWorker;
 	private JButton btnDeleteWorker;
 	private JTextField textCodeService;
 	private JTextField textWorkerCode;
@@ -60,11 +64,11 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 	private JLabel lblDateEnd;
 	private JButton btnDeleteService;
 	private Service service;
+	private JButton btnAddService;
 
-	public CrudWindow(InterfaceBoss datosBoss,String id, String name, String password, String surname,
-			String bossId) {
-		idBoss=bossId;
-		this.datosBoss=datosBoss;
+	public CrudWindow(InterfaceBoss datosBoss, String id, String name, String password, String surname, String bossId) {
+		idBoss = bossId;
+		this.datosBoss = datosBoss;
 		setModal(true);
 		setResizable(false);
 		setForeground(new Color(238, 130, 238));
@@ -79,7 +83,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		backPanel.setBackground(new Color(207, 226, 243));
 		borderPane.add(backPanel);
 		backPanel.setLayout(null);
-		
+
 		textCode = new JTextField();
 		textCode.setToolTipText("INTRODUCE WORKER ID\r\n");
 		textCode.setHorizontalAlignment(SwingConstants.CENTER);
@@ -91,7 +95,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textCode.setText(id);
 		backPanel.add(textCode);
 		textCode.setColumns(10);
-		
+
 		textName = new JTextField();
 		textName.setToolTipText("INTRODUCE WORKER NAME");
 		textName.setHorizontalAlignment(SwingConstants.CENTER);
@@ -103,7 +107,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textName.setEditable(false);
 		textName.setText(name);
 		backPanel.add(textName);
-		
+
 		textSurname = new JTextField();
 		textSurname.setToolTipText("INTRODUCE WORKER SURNAME\r\n");
 		textSurname.setForeground(Color.BLACK);
@@ -115,11 +119,14 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textSurname.setEditable(false);
 		textSurname.setText(surname);
 		backPanel.add(textSurname);
-		
-		textSalary = new JTextField();
+		try {
+			textSalary = new JFormattedTextField(new MaskFormatter("####.##"));
+		} catch (ParseException e) {
+			JOptionPane.showMessageDialog(this, e);
+		}
 		textSalary.setToolTipText("INTRODUCE WORKER SALARY\r\n");
 		textSalary.setHorizontalAlignment(SwingConstants.CENTER);
-		textSalary.setText("SALARY");
+		textSalary.setText("0000.00");
 		textSalary.setForeground(Color.LIGHT_GRAY);
 		textSalary.setFont(new Font("Arial", Font.PLAIN, 14));
 		textSalary.setColumns(10);
@@ -127,13 +134,13 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textSalary.setBorder(new LineBorder(new Color(207, 226, 243)));
 		textSalary.addFocusListener(this);
 		backPanel.add(textSalary);
-		
-		btnConfirm = new JButton("CONFIRM");
-		btnConfirm.setFont(new Font("Arial", Font.BOLD, 14));
-		btnConfirm.setBorder(new LineBorder(new Color(109, 158, 235)));
-		btnConfirm.setBackground(Color.WHITE);
-		btnConfirm.setBounds(250, 147, 143, 31);
-		btnConfirm.addActionListener(this);
+
+		btnAddWorker = new JButton("ADD");
+		btnAddWorker.setFont(new Font("Arial", Font.BOLD, 14));
+		btnAddWorker.setBorder(new LineBorder(new Color(109, 158, 235)));
+		btnAddWorker.setBackground(Color.WHITE);
+		btnAddWorker.setBounds(250, 147, 143, 31);
+		btnAddWorker.addActionListener(this);
 		backPanel.add(btnModifyWorker);
 	}
 
@@ -141,8 +148,8 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 	 * @wbp.parser.constructor
 	 */
 	public CrudWindow(InterfaceBoss datosBoss, Worker w) {
-		this.datosBoss=datosBoss;
-		worker=w;
+		this.datosBoss = datosBoss;
+		worker = w;
 		setModal(true);
 		setResizable(false);
 		setForeground(new Color(238, 130, 238));
@@ -157,7 +164,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		backPanel.setBackground(new Color(207, 226, 243));
 		borderPane.add(backPanel);
 		backPanel.setLayout(null);
-		
+
 		textCode = new JTextField();
 		textCode.setToolTipText("INTRODUCE WORKER ID\r\n");
 		textCode.setHorizontalAlignment(SwingConstants.CENTER);
@@ -169,7 +176,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textCode.setText(worker.getId());
 		backPanel.add(textCode);
 		textCode.setColumns(10);
-		
+
 		textName = new JTextField();
 		textName.setToolTipText("INTRODUCE WORKER NAME");
 		textName.setHorizontalAlignment(SwingConstants.CENTER);
@@ -180,7 +187,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textName.setBorder(new LineBorder(new Color(207, 226, 243)));
 		textName.setText(worker.getName());
 		backPanel.add(textName);
-		
+
 		textSurname = new JTextField();
 		textSurname.setToolTipText("INTRODUCE WORKER SURNAME\r\n");
 		textSurname.setForeground(Color.BLACK);
@@ -191,8 +198,11 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textSurname.setBounds(10, 105, 143, 31);
 		textSurname.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textSurname);
-		
-		textSalary = new JTextField();
+		try {
+			textSalary = new JFormattedTextField(new MaskFormatter("####.##"));
+		} catch (ParseException e) {
+			JOptionPane.showMessageDialog(this, e);
+		}
 		textSalary.setToolTipText("INTRODUCE WORKER SALARY\r\n");
 		textSalary.setHorizontalAlignment(SwingConstants.CENTER);
 		textSalary.setText(String.valueOf(worker.getSalary()));
@@ -202,7 +212,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textSalary.setBounds(10, 147, 143, 31);
 		textSalary.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textSalary);
-		
+
 		btnModifyWorker = new JButton("MODIFY");
 		btnModifyWorker.setFont(new Font("Arial", Font.BOLD, 14));
 		btnModifyWorker.setBorder(new LineBorder(new Color(109, 158, 235)));
@@ -210,13 +220,12 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		btnModifyWorker.setBounds(250, 147, 143, 31);
 		btnModifyWorker.addActionListener(this);
 		backPanel.add(btnModifyWorker);
-		
-		
+
 	}
 
 	public CrudWindow(Worker w, InterfaceBoss datosBoss) {
-		this.datosBoss=datosBoss;
-		worker=w;
+		this.datosBoss = datosBoss;
+		worker = w;
 		setModal(true);
 		setResizable(false);
 		setForeground(new Color(238, 130, 238));
@@ -231,7 +240,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		backPanel.setBackground(new Color(207, 226, 243));
 		borderPane.add(backPanel);
 		backPanel.setLayout(null);
-		
+
 		textCode = new JTextField();
 		textCode.setToolTipText("INTRODUCE WORKER ID\r\n");
 		textCode.setHorizontalAlignment(SwingConstants.CENTER);
@@ -243,7 +252,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textCode.setText(worker.getId());
 		backPanel.add(textCode);
 		textCode.setColumns(10);
-		
+
 		textName = new JTextField();
 		textName.setToolTipText("INTRODUCE WORKER NAME");
 		textName.setHorizontalAlignment(SwingConstants.CENTER);
@@ -255,7 +264,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textName.setBorder(new LineBorder(new Color(207, 226, 243)));
 		textName.setText(worker.getName());
 		backPanel.add(textName);
-		
+
 		textSurname = new JTextField();
 		textSurname.setToolTipText("INTRODUCE WORKER SURNAME\r\n");
 		textSurname.setForeground(Color.LIGHT_GRAY);
@@ -267,8 +276,11 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textSurname.setEditable(false);
 		textSurname.setText(worker.getSurname());
 		backPanel.add(textSurname);
-		
-		textSalary = new JTextField();
+		try {
+			textSalary = new JFormattedTextField(new MaskFormatter("####.##"));
+		} catch (ParseException e) {
+			JOptionPane.showMessageDialog(this, e);
+		}
 		textSalary.setToolTipText("INTRODUCE WORKER SALARY\r\n");
 		textSalary.setHorizontalAlignment(SwingConstants.CENTER);
 		textSalary.setText(String.valueOf(worker.getSalary()));
@@ -279,7 +291,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textSalary.setBounds(10, 147, 143, 31);
 		textSalary.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textSalary);
-		
+
 		btnDeleteWorker = new JButton("DELETE");
 		btnDeleteWorker.setFont(new Font("Arial", Font.BOLD, 14));
 		btnDeleteWorker.setBorder(new LineBorder(new Color(109, 158, 235)));
@@ -290,7 +302,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 	}
 
 	public CrudWindow(InterfaceBoss datosBoss, Service service) {
-		this.datosBoss=datosBoss;
+		this.datosBoss = datosBoss;
 		setModal(true);
 		setResizable(false);
 		setForeground(new Color(238, 130, 238));
@@ -305,7 +317,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		backPanel.setBackground(new Color(207, 226, 243));
 		borderPane.add(backPanel);
 		backPanel.setLayout(null);
-		
+
 		textCodeService = new JTextField();
 		textCodeService.setToolTipText("SERVICE CODE\r\n");
 		textCodeService.setHorizontalAlignment(SwingConstants.CENTER);
@@ -317,7 +329,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textCodeService.setText(service.getCodeService());
 		backPanel.add(textCodeService);
 		textCodeService.setColumns(10);
-		
+
 		textWorkerCode = new JTextField();
 		textWorkerCode.setToolTipText("ASSIGNED WORKER ID");
 		textWorkerCode.setHorizontalAlignment(SwingConstants.CENTER);
@@ -328,7 +340,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textWorkerCode.setBorder(new LineBorder(new Color(207, 226, 243)));
 		textWorkerCode.setText(service.getWorkerId());
 		backPanel.add(textWorkerCode);
-		
+
 		textDescription = new JTextField();
 		textDescription.setToolTipText("SERVICE DESCRIPTION\r\n");
 		textDescription.setForeground(Color.BLACK);
@@ -339,8 +351,11 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textDescription.setBounds(10, 105, 143, 31);
 		textDescription.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textDescription);
-		
-		textPrice = new JTextField();
+		try {
+			textPrice = new JFormattedTextField(new MaskFormatter("####.##"));
+		} catch (ParseException e) {
+			JOptionPane.showMessageDialog(this, e);
+		}
 		textPrice.setToolTipText("SERVICE PRICE\r\n");
 		textPrice.setHorizontalAlignment(SwingConstants.CENTER);
 		textPrice.setText(String.valueOf(service.getPrice()));
@@ -350,7 +365,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textPrice.setBounds(10, 147, 143, 31);
 		textPrice.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textPrice);
-		
+
 		btnModifyService = new JButton("MODIFY");
 		btnModifyService.setFont(new Font("Arial", Font.BOLD, 14));
 		btnModifyService.setBorder(new LineBorder(new Color(109, 158, 235)));
@@ -358,12 +373,12 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		btnModifyService.setBounds(250, 147, 143, 31);
 		btnModifyService.addActionListener(this);
 		backPanel.add(btnModifyService);
-		
+
 		JLabel lblDateStart = new JLabel("DATE TIME START:");
 		lblDateStart.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 11));
 		lblDateStart.setBounds(251, 26, 125, 14);
 		backPanel.add(lblDateStart);
-		
+
 		spinnerDateStart = new JSpinner(new SpinnerDateModel());
 		spinnerDateStart.setFont(new Font("Arial", Font.BOLD, 11));
 		spinnerDateStart.setBounds(250, 47, 143, 20);
@@ -371,7 +386,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		spinnerDateStart.setEditor(timeEditorStart);
 		spinnerDateStart.setValue(new Date(Timestamp.valueOf(service.getDate_time_start()).getTime()));
 		backPanel.add(spinnerDateStart);
-		
+
 		spinnerDateEnd = new JSpinner(new SpinnerDateModel());
 		spinnerDateEnd.setFont(new Font("Arial", Font.BOLD, 11));
 		spinnerDateEnd.setBounds(250, 111, 143, 20);
@@ -379,20 +394,15 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		spinnerDateEnd.setEditor(timeEditorEnd);
 		spinnerDateEnd.setValue(new Date(Timestamp.valueOf(service.getDate_time_end()).getTime()));
 		backPanel.add(spinnerDateEnd);
-		
+
 		lblDateEnd = new JLabel("SERVICE  TIME END:");
 		lblDateEnd.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 11));
 		lblDateEnd.setBounds(250, 86, 156, 14);
 		backPanel.add(lblDateEnd);
 	}
 
-	public CrudWindow(InterfaceBoss datosBoss2) {
-		// TODO Auto-generated constructor stub
-	}
-
-	public CrudWindow(Service service, InterfaceBoss datosBoss) {
-		this.datosBoss=datosBoss;
-		this.service=service;
+	public CrudWindow(InterfaceBoss datosBoss) {
+		this.datosBoss = datosBoss;
 		setModal(true);
 		setResizable(false);
 		setForeground(new Color(238, 130, 238));
@@ -407,7 +417,116 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		backPanel.setBackground(new Color(207, 226, 243));
 		borderPane.add(backPanel);
 		backPanel.setLayout(null);
-		
+
+		textCodeService = new JTextField();
+		textCodeService.setToolTipText("SERVICE CODE\r\n");
+		textCodeService.setHorizontalAlignment(SwingConstants.CENTER);
+		textCodeService.setForeground(Color.LIGHT_GRAY);
+		textCodeService.setFont(new Font("Arial", Font.PLAIN, 14));
+		textCodeService.setBounds(10, 21, 143, 31);
+		textCodeService.setBorder(new LineBorder(new Color(207, 226, 243)));
+		textCodeService.setEditable(false);
+		textCodeService.setText("PREDEFINED");
+		backPanel.add(textCodeService);
+		textCodeService.setColumns(10);
+
+		textWorkerCode = new JTextField();
+		textWorkerCode.setToolTipText("ASSIGNED WORKER ID");
+		textWorkerCode.setHorizontalAlignment(SwingConstants.CENTER);
+		textWorkerCode.setForeground(Color.LIGHT_GRAY);
+		textWorkerCode.setFont(new Font("Arial", Font.PLAIN, 14));
+		textWorkerCode.setColumns(10);
+		textWorkerCode.setEditable(true);
+		textWorkerCode.setBounds(10, 63, 143, 31);
+		textWorkerCode.setBorder(new LineBorder(new Color(207, 226, 243)));
+		textWorkerCode.setText("WORKER ID");
+		textWorkerCode.addFocusListener(this);
+		backPanel.add(textWorkerCode);
+
+		textDescription = new JTextField();
+		textDescription.setToolTipText("SERVICE DESCRIPTION\r\n");
+		textDescription.setForeground(Color.LIGHT_GRAY);
+		textDescription.setFont(new Font("Arial", Font.PLAIN, 14));
+		textDescription.setText("DESCRIPTION");
+		textDescription.setHorizontalAlignment(SwingConstants.CENTER);
+		textDescription.setColumns(10);
+		textDescription.setEditable(true);
+		textDescription.setBounds(10, 105, 143, 31);
+		textDescription.setBorder(new LineBorder(new Color(207, 226, 243)));
+		textDescription.addFocusListener(this);
+		backPanel.add(textDescription);
+		try {
+			textPrice = new JFormattedTextField(new MaskFormatter("####.##"));
+		} catch (ParseException e) {
+			JOptionPane.showMessageDialog(this, e);
+		}
+		textPrice.setToolTipText("SERVICE PRICE\r\n");
+		textPrice.setHorizontalAlignment(SwingConstants.CENTER);
+		textPrice.setText("0000.00");
+		textPrice.setForeground(Color.LIGHT_GRAY);
+		textPrice.setFont(new Font("Arial", Font.PLAIN, 14));
+		textPrice.setColumns(10);
+		textPrice.setEditable(true);
+		textPrice.setBounds(10, 147, 143, 31);
+		textPrice.setBorder(new LineBorder(new Color(207, 226, 243)));
+		textPrice.addFocusListener(this);
+		backPanel.add(textPrice);
+
+		btnAddService = new JButton("ADD");
+		btnAddService.setFont(new Font("Arial", Font.BOLD, 14));
+		btnAddService.setBorder(new LineBorder(new Color(109, 158, 235)));
+		btnAddService.setBackground(Color.WHITE);
+		btnAddService.setBounds(250, 147, 143, 31);
+		btnAddService.addActionListener(this);
+		backPanel.add(btnAddService);
+
+		JLabel lblDateStart = new JLabel("DATE TIME START:");
+		lblDateStart.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 11));
+		lblDateStart.setBounds(251, 26, 125, 14);
+		backPanel.add(lblDateStart);
+
+		spinnerDateStart = new JSpinner(new SpinnerDateModel());
+		spinnerDateStart.setFont(new Font("Arial", Font.BOLD, 11));
+		spinnerDateStart.setBounds(250, 47, 143, 20);
+		JSpinner.DateEditor timeEditorStart = new JSpinner.DateEditor(spinnerDateStart, "dd/MM/yyyy HH:mm");
+		spinnerDateStart.setEditor(timeEditorStart);
+		spinnerDateStart.setValue(new Date(Timestamp.valueOf(LocalDateTime.now()).getTime()));
+		spinnerDateStart.setEnabled(true);
+		backPanel.add(spinnerDateStart);
+
+		spinnerDateEnd = new JSpinner(new SpinnerDateModel());
+		spinnerDateEnd.setFont(new Font("Arial", Font.BOLD, 11));
+		spinnerDateEnd.setBounds(250, 111, 143, 20);
+		JSpinner.DateEditor timeEditorEnd = new JSpinner.DateEditor(spinnerDateEnd, "dd/MM/yyyy HH:mm");
+		spinnerDateEnd.setEditor(timeEditorEnd);
+		spinnerDateEnd.setValue(new Date(Timestamp.valueOf(LocalDateTime.now()).getTime()));
+		spinnerDateEnd.setEnabled(true);
+		backPanel.add(spinnerDateEnd);
+
+		lblDateEnd = new JLabel("SERVICE  TIME END:");
+		lblDateEnd.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 11));
+		lblDateEnd.setBounds(250, 86, 156, 14);
+		backPanel.add(lblDateEnd);
+	}
+
+	public CrudWindow(Service service, InterfaceBoss datosBoss) {
+		this.datosBoss = datosBoss;
+		this.service = service;
+		setModal(true);
+		setResizable(false);
+		setForeground(new Color(238, 130, 238));
+		setBounds(100, 100, 501, 336);
+		borderPane = new JPanel();
+		borderPane.setBackground(new Color(109, 158, 235));
+		borderPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(borderPane);
+		borderPane.setLayout(null);
+		JPanel backPanel = new JPanel();
+		backPanel.setBounds(41, 48, 403, 201);
+		backPanel.setBackground(new Color(207, 226, 243));
+		borderPane.add(backPanel);
+		backPanel.setLayout(null);
+
 		textCodeService = new JTextField();
 		textCodeService.setToolTipText("SERVICE CODE\r\n");
 		textCodeService.setHorizontalAlignment(SwingConstants.CENTER);
@@ -419,7 +538,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textCodeService.setText(service.getCodeService());
 		backPanel.add(textCodeService);
 		textCodeService.setColumns(10);
-		
+
 		textWorkerCode = new JTextField();
 		textWorkerCode.setToolTipText("ASSIGNED WORKER ID");
 		textWorkerCode.setHorizontalAlignment(SwingConstants.CENTER);
@@ -431,7 +550,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textWorkerCode.setBorder(new LineBorder(new Color(207, 226, 243)));
 		textWorkerCode.setText(service.getWorkerId());
 		backPanel.add(textWorkerCode);
-		
+
 		textDescription = new JTextField();
 		textDescription.setToolTipText("SERVICE DESCRIPTION\r\n");
 		textDescription.setForeground(Color.BLACK);
@@ -443,8 +562,12 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textDescription.setBounds(10, 105, 143, 31);
 		textDescription.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textDescription);
-		
-		textPrice = new JTextField();
+
+		try {
+			textPrice = new JFormattedTextField(new MaskFormatter("####.##"));
+		} catch (ParseException e) {
+			JOptionPane.showMessageDialog(this, e);
+		}
 		textPrice.setToolTipText("SERVICE PRICE\r\n");
 		textPrice.setHorizontalAlignment(SwingConstants.CENTER);
 		textPrice.setText(String.valueOf(service.getPrice()));
@@ -455,7 +578,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		textPrice.setBounds(10, 147, 143, 31);
 		textPrice.setBorder(new LineBorder(new Color(207, 226, 243)));
 		backPanel.add(textPrice);
-		
+
 		btnDeleteService = new JButton("DELETE");
 		btnDeleteService.setFont(new Font("Arial", Font.BOLD, 14));
 		btnDeleteService.setBorder(new LineBorder(new Color(109, 158, 235)));
@@ -463,12 +586,12 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		btnDeleteService.setBounds(250, 147, 143, 31);
 		btnDeleteService.addActionListener(this);
 		backPanel.add(btnDeleteService);
-		
+
 		JLabel lblDateStart = new JLabel("DATE TIME START:");
 		lblDateStart.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 11));
 		lblDateStart.setBounds(251, 26, 125, 14);
 		backPanel.add(lblDateStart);
-		
+
 		spinnerDateStart = new JSpinner(new SpinnerDateModel());
 		spinnerDateStart.setFont(new Font("Arial", Font.BOLD, 11));
 		spinnerDateStart.setBounds(250, 47, 143, 20);
@@ -477,7 +600,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		spinnerDateStart.setValue(new Date(Timestamp.valueOf(service.getDate_time_start()).getTime()));
 		spinnerDateStart.setEnabled(false);
 		backPanel.add(spinnerDateStart);
-		
+
 		spinnerDateEnd = new JSpinner(new SpinnerDateModel());
 		spinnerDateEnd.setFont(new Font("Arial", Font.BOLD, 11));
 		spinnerDateEnd.setBounds(250, 111, 143, 20);
@@ -486,7 +609,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		spinnerDateEnd.setValue(new Date(Timestamp.valueOf(service.getDate_time_end()).getTime()));
 		spinnerDateEnd.setEnabled(false);
 		backPanel.add(spinnerDateEnd);
-		
+
 		lblDateEnd = new JLabel("SERVICE  TIME END:");
 		lblDateEnd.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 11));
 		lblDateEnd.setBounds(250, 86, 156, 14);
@@ -495,64 +618,94 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource().equals(btnConfirm)) {
-			if(!textCode.getText().isEmpty()
-				&&!textName.getText().isEmpty()&&!textSurname.getText().isEmpty()&&!textSalary.getText().isEmpty())
-					addWorker();
-			else 
-				JOptionPane.showMessageDialog(this,"PLEASE INSERT ALL THE INFORMATION");
-		}	
-		if(e.getSource().equals(btnModifyWorker)) {
-			if(!textCode.getText().isEmpty()
-					&&!textName.getText().isEmpty()&&!textSurname.getText().isEmpty()&&!textSalary.getText().isEmpty())
-						modifyWorker();
-			else 
-				JOptionPane.showMessageDialog(this,"PLEASE INSERT ALL THE INFORMATION");
+		if (e.getSource().equals(btnAddWorker)) {
+			if (!textCode.getText().isEmpty() && !textName.getText().isEmpty() && !textSurname.getText().isEmpty()
+					&& !textSalary.getText().isEmpty())
+				addWorker();
+			else
+				JOptionPane.showMessageDialog(this, "PLEASE INSERT ALL THE INFORMATION");
 		}
-		if(e.getSource().equals(btnDeleteWorker)) {
-			if(!textCode.getText().isEmpty()
-					&&!textName.getText().isEmpty()&&!textSurname.getText().isEmpty()&&!textSalary.getText().isEmpty())
-						deleteWorker();
-			else 
-				JOptionPane.showMessageDialog(this,"PLEASE INSERT ALL THE INFORMATION");
+		if (e.getSource().equals(btnModifyWorker)) {
+			if (!textCode.getText().isEmpty() && !textName.getText().isEmpty() && !textSurname.getText().isEmpty()
+					&& !textSalary.getText().isEmpty())
+				modifyWorker();
+			else
+				JOptionPane.showMessageDialog(this, "PLEASE INSERT ALL THE INFORMATION");
 		}
-		if(e.getSource().equals(btnModifyService)) {
-			if(!textCodeService.getText().isEmpty()
-					&&!textDescription.getText().isEmpty()&&!textPrice.getText().isEmpty()&&!textWorkerCode.getText().isEmpty())
-						modifyService();
-			else 
-				JOptionPane.showMessageDialog(this,"PLEASE INSERT ALL THE INFORMATION");
+		if (e.getSource().equals(btnDeleteWorker)) {
+			if (!textCode.getText().isEmpty() && !textName.getText().isEmpty() && !textSurname.getText().isEmpty()
+					&& !textSalary.getText().isEmpty())
+				deleteWorker();
+			else
+				JOptionPane.showMessageDialog(this, "PLEASE INSERT ALL THE INFORMATION");
 		}
-		if(e.getSource().equals(btnDeleteService)) {
-			if(!textCodeService.getText().isEmpty()
-					&&!textDescription.getText().isEmpty()&&!textPrice.getText().isEmpty()&&!textWorkerCode.getText().isEmpty())
-						deleteSevice();
-			else 
-				JOptionPane.showMessageDialog(this,"PLEASE INSERT ALL THE INFORMATION");
-		}	
+		if (e.getSource().equals(btnModifyService)) {
+			if (!textCodeService.getText().isEmpty() && !textDescription.getText().isEmpty()
+					&& !textPrice.getText().isEmpty() && !textWorkerCode.getText().isEmpty())
+				modifyService();
+			else
+				JOptionPane.showMessageDialog(this, "PLEASE INSERT ALL THE INFORMATION");
+		}
+		if (e.getSource().equals(btnDeleteService)) {
+			if (!textCodeService.getText().isEmpty() && !textDescription.getText().isEmpty()
+					&& !textPrice.getText().isEmpty() && !textWorkerCode.getText().isEmpty())
+				deleteSevice();
+			else
+				JOptionPane.showMessageDialog(this, "PLEASE INSERT ALL THE INFORMATION");
+		}
+		if (e.getSource().equals(btnAddService)) {
+			if (!textCodeService.getText().isEmpty() && !textDescription.getText().isEmpty()
+					&& !textPrice.getText().isEmpty() && !textWorkerCode.getText().isEmpty())
+				addSevice();
+			else
+				JOptionPane.showMessageDialog(this, "PLEASE INSERT ALL THE INFORMATION");
+		}
+	}
+
+	private void addSevice() {
+		try {
+			Service service = new Service();
+			service.setWorkerId(textWorkerCode.getText());
+			service.setPrice(Double.parseDouble(textPrice.getText()));
+			service.setDescription(textDescription.getText());
+			DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			String spinnerStart = formatter.format(spinnerDateStart.getValue());
+			String spinnerEnd = formatter.format(spinnerDateEnd.getValue());
+			service.setDate_time_start(LocalDateTime.parse(spinnerStart, formato));
+			service.setDate_time_end(LocalDateTime.parse(spinnerEnd, formato));
+			datosBoss.addService(service);
+			JOptionPane.showMessageDialog(this,
+					"SERVICE ADDED CORRECTLY, THE CODE OF THE SERVICE IS:" + service.getCodeService());
+			this.dispose();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(this, e);
+		}
 	}
 
 	private void deleteSevice() {
-		int reply=JOptionPane.showConfirmDialog(this,"ARE YOU SURE THAT YOU WANT TO DELETE THIS SERVICE?","CONFIRMATION WINDOW",JOptionPane.YES_NO_OPTION);
-		if(reply == JOptionPane.YES_OPTION) {
+		int reply = JOptionPane.showConfirmDialog(this, "ARE YOU SURE THAT YOU WANT TO DELETE THIS SERVICE?",
+				"CONFIRMATION WINDOW", JOptionPane.YES_NO_OPTION);
+		if (reply == JOptionPane.YES_OPTION) {
 			try {
 				datosBoss.deleteService(service.getCodeService());
-				JOptionPane.showMessageDialog(this,"SERVICE DELETED CORRECTLY");
+				JOptionPane.showMessageDialog(this, "SERVICE DELETED CORRECTLY");
 				this.dispose();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, e);
 			}
-		}else {
+		} else {
 			this.dispose();
 		}
 	}
 
 	private void modifyService() {
-		
-		int reply=JOptionPane.showConfirmDialog(this,"ARE YOU SURE THAT YOU WANT TO MODIFY THIS SERVICE?","CONFIRMATION WINDOW",JOptionPane.YES_NO_OPTION);
-		if(reply == JOptionPane.YES_OPTION) {
+
+		int reply = JOptionPane.showConfirmDialog(this, "ARE YOU SURE THAT YOU WANT TO MODIFY THIS SERVICE?",
+				"CONFIRMATION WINDOW", JOptionPane.YES_NO_OPTION);
+		if (reply == JOptionPane.YES_OPTION) {
 			try {
-				Service service=new Service();
+				Service service = new Service();
 				service.setCodeService(textCodeService.getText());
 				service.setWorkerId(textWorkerCode.getText());
 				service.setPrice(Double.parseDouble(textPrice.getText()));
@@ -561,30 +714,31 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 				SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 				String spinnerStart = formatter.format(spinnerDateStart.getValue());
 				String spinnerEnd = formatter.format(spinnerDateEnd.getValue());
-				service.setDate_time_start(LocalDateTime.parse(spinnerStart,formato));
-				service.setDate_time_end(LocalDateTime.parse(spinnerEnd,formato));
+				service.setDate_time_start(LocalDateTime.parse(spinnerStart, formato));
+				service.setDate_time_end(LocalDateTime.parse(spinnerEnd, formato));
 				datosBoss.modifyService(service);
-				JOptionPane.showMessageDialog(this,"SERVICE MODIFIED CORRECTLY");
+				JOptionPane.showMessageDialog(this, "SERVICE MODIFIED CORRECTLY");
 				this.dispose();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, e);
 			}
-		}else {
+		} else {
 			this.dispose();
 		}
 	}
 
 	private void deleteWorker() {
-		int reply=JOptionPane.showConfirmDialog(this,"ARE YOU SURE THAT YOU WANT TO DELETE THIS WORKER?","CONFIRMATION WINDOW",JOptionPane.YES_NO_OPTION);
-		if(reply == JOptionPane.YES_OPTION) {
+		int reply = JOptionPane.showConfirmDialog(this, "ARE YOU SURE THAT YOU WANT TO DELETE THIS WORKER?",
+				"CONFIRMATION WINDOW", JOptionPane.YES_NO_OPTION);
+		if (reply == JOptionPane.YES_OPTION) {
 			try {
 				datosBoss.deleteWorker(worker.getId());
-				JOptionPane.showMessageDialog(this,"WORKER DELETED CORRECTLY");
+				JOptionPane.showMessageDialog(this, "WORKER DELETED CORRECTLY");
 				this.dispose();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, e);
 			}
-		}else {
+		} else {
 			this.dispose();
 		}
 	}
@@ -593,22 +747,23 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		worker.setName(textName.getText());
 		worker.setSurname(textSurname.getText());
 		worker.setSalary(Double.parseDouble(textSalary.getText()));
-		int reply=JOptionPane.showConfirmDialog(this,"ARE YOU SURE THAT YOU WANT TO MODIFY THIS WORKER?","CONFIRMATION WINDOW",JOptionPane.YES_NO_OPTION);
-		if(reply == JOptionPane.YES_OPTION) {
+		int reply = JOptionPane.showConfirmDialog(this, "ARE YOU SURE THAT YOU WANT TO MODIFY THIS WORKER?",
+				"CONFIRMATION WINDOW", JOptionPane.YES_NO_OPTION);
+		if (reply == JOptionPane.YES_OPTION) {
 			try {
 				datosBoss.modifyWorker(worker);
-				JOptionPane.showMessageDialog(this,"WORKER MODIFIED CORRECTLY");
+				JOptionPane.showMessageDialog(this, "WORKER MODIFIED CORRECTLY");
 				this.dispose();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, e);
 			}
-		}else {
+		} else {
 			this.dispose();
 		}
 	}
 
 	private void addWorker() {
-		Worker worker=new Worker();
+		Worker worker = new Worker();
 		worker.setId(textCode.getText());
 		worker.setName(textName.getText());
 		worker.setPassword(textSurname.getText());
@@ -617,7 +772,7 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 		worker.setType('W');
 		try {
 			datosBoss.addWorker(worker);
-			JOptionPane.showMessageDialog(this,"WORKER ADDED CORRECTLY");
+			JOptionPane.showMessageDialog(this, "WORKER ADDED CORRECTLY");
 			this.dispose();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e);
@@ -626,24 +781,36 @@ public class CrudWindow extends JDialog implements ActionListener,FocusListener{
 
 	@Override
 	public void focusGained(FocusEvent e) {
-		if(e.getSource().equals(textSalary)) {
+		if (e.getSource().equals(textSalary) && textSalary.getText().equalsIgnoreCase("0000.00")) {
 			textSalary.setText("");
 			textSalary.setForeground(Color.BLACK);
+		}
+		if (e.getSource().equals(textPrice) && textPrice.getText().equalsIgnoreCase("0000.00")) {
+			textPrice.setText("");
+			textPrice.setForeground(Color.BLACK);
+		}
+		if (e.getSource().equals(textDescription) && textDescription.getText().equalsIgnoreCase("DESCRIPTION")) {
+			textDescription.setText("");
+			textDescription.setForeground(Color.BLACK);
+		}
+		if (e.getSource().equals(textWorkerCode) && textWorkerCode.getText().equalsIgnoreCase("WORKER ID")) {
+			textWorkerCode.setText("");
+			textWorkerCode.setForeground(Color.BLACK);
 		}
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		if(e.getSource().equals(textCode)) {
+		if (e.getSource().equals(textCode)) {
 			try {
-				Worker w=datosBoss.searchWorker(textCode.getText());
-				if(w!=null) {
-					JOptionPane.showMessageDialog(this,"ERROR WORKER ALREADY EXISTS");
+				Worker w = datosBoss.searchWorker(textCode.getText());
+				if (w != null) {
+					JOptionPane.showMessageDialog(this, "ERROR WORKER ALREADY EXISTS");
 				}
 			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(this,"ERROR SEARCHING WORKER");
+				JOptionPane.showMessageDialog(this, "ERROR SEARCHING WORKER");
 			}
 		}
-		
+
 	}
 }

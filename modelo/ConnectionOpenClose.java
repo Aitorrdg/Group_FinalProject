@@ -10,12 +10,12 @@ import exceptions.CreateException;
 
 public class ConnectionOpenClose {
 	private ResourceBundle configFile;
-	private static String url;
-	private static String user;
-	private static String pass;
+	private  String url;
+	private  String user;
+	private  String pass;
 
 	public ConnectionOpenClose() {
-		configFile = ResourceBundle.getBundle("Config.properties");
+		configFile = ResourceBundle.getBundle("modelo.Config");
 		url = configFile.getString("URL");
 		user = configFile.getString("USER");
 		pass = configFile.getString("PASSWORD");

@@ -21,7 +21,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 		Worker worker = null;
 		ResultSet rs = null;
 
-		conection.openConnection();
+		con=conection.openConnection();
 		try {
 			stmt = con.prepareStatement("select w.*,u.name,u.surname from worker w,user u where w.code=u.code");
 			rs = stmt.executeQuery();
@@ -45,7 +45,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 
 	@Override
 	public void addWorker(Worker worker) throws Exception {
-		conection.openConnection();
+		con=conection.openConnection();
 		try {
 			stmt = con.prepareStatement("insert into worker values(?,?,?)");
 			stmt.setString(1, worker.getId());
@@ -61,7 +61,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 
 	@Override
 	public void deleteWorker(String id) throws Exception {
-		conection.openConnection();
+		con=conection.openConnection();
 		try {
 			stmt = con.prepareStatement("delete w.*,u.* from worker w,user u where w.code=? and w.code=u.code");
 			stmt.setString(1, id);
@@ -75,7 +75,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 
 	@Override
 	public void modifyWorker(Worker worker) throws Exception {
-		conection.openConnection();
+		con=conection.openConnection();
 		try {
 			stmt = con.prepareStatement("update worker w,user u set salary=?,name=?,surname=? where w.code=? and w.code=u.code");
 			stmt.setDouble(1, worker.getSalary());
@@ -96,7 +96,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 		Worker worker = null;
 		ResultSet rs = null;
 
-		conection.openConnection();
+		con=conection.openConnection();
 		try {
 			stmt = con.prepareStatement("select w.*,u.name,u.surname from worker w,user u where w.code=? and w.code=u.code");
 			stmt.setString(1, id);
@@ -123,7 +123,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 		Service service = null;
 		ResultSet rs = null;
 
-		conection.openConnection();
+		con=conection.openConnection();
 		try {
 			stmt = con.prepareStatement(
 					"select s.*,date_time_start,date_time_end from service s,carry_out c where s.cod_service=c.cod_service and s.code=c.code");
@@ -143,14 +143,15 @@ public class BDImplementationBoss implements InterfaceBoss {
 
 		} finally {
 			conection.closeConnection(stmt,con);
-			rs.close();
+			if(rs!=null)
+				rs.close();
 		}
 		return services;
 	}
 
 	@Override
 	public Service addService(Service service) throws Exception {
-		conection.openConnection();
+		con=conection.openConnection();
 
 		try {
 			CallableStatement cst = con.prepareCall("{CALL generate_service_primary_key(?,?,?,?,?)}");
@@ -180,7 +181,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 
 	@Override
 	public void deleteService(String cod_service) throws Exception {
-		conection.openConnection();
+		con=conection.openConnection();
 		try {
 			stmt = con.prepareStatement("delete s.*,c.* from service s,carry_out c where s.cod_service=? and s.cod_service=c.cod_service and s.code=c.code");
 			stmt.setString(1, cod_service);
@@ -195,7 +196,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 
 	@Override
 	public void modifyService(Service service) throws Exception {
-		conection.openConnection();
+		con=conection.openConnection();
 		Timestamp  dateStart = Timestamp.valueOf(service.getDate_time_start());
 		Timestamp  dateEnd = Timestamp.valueOf(service.getDate_time_end());
 		try {
@@ -227,7 +228,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 		Service service = null ;
 		ResultSet rs = null;
 
-		conection.openConnection();
+		con=conection.openConnection();
 		try {
 			stmt = con.prepareStatement(
 					"select s.*,date_time_start,date_time_end from service s,carry_out c where s.cod_service=? and s.cod_service=c.cod_service and s.code=c.code ");
