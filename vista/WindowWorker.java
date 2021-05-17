@@ -129,7 +129,25 @@ public class WindowWorker extends JDialog implements ActionListener {
 			scrollpaneServices.setBounds(20, 209, 783, 125);
 			borderPanel.add(scrollpaneServices);
 			String titulos[] = { "Service Code", "Description", "Worker ID", "Date of end", "Date of start", "Price" };
-			tableServices = new JTable(matrizTabla, titulos);
+			tableServices = new JTable(matrizTabla, titulos){
+                /**
+                *
+                */
+                private static final long serialVersionUID = 1L;
+
+                // ***********************METODO PARA HACER QUE LA TABLA NO SEA EDITABLE, Y ASI
+                // HACER DOBLE CLICK************************************
+                // Para ello sobreescribimos el metodo que ya tiene la clase
+                // JTable.isCellEditable
+                public boolean isCellEditable(int row, int column) {
+                        for (int i = 0; i < tableServices.getRowCount(); i++) {
+                                if (row == i) {
+                                        return false;
+                                }
+                        }
+                        return true;
+                }
+        };
 			tableServices.setVisible(true);
 			tableServices.setSelectionBackground(new Color(109, 158, 235));
 			tableServices.setSelectionForeground(Color.WHITE);
@@ -221,7 +239,25 @@ public class WindowWorker extends JDialog implements ActionListener {
 
 					String titulos[] = { "Service Code", "Description", "Worker ID", "Date of end", "Date of start",
 							"Price" };
-					tableIncompleteServices = new JTable(matrizTabla2, titulos);
+					tableIncompleteServices = new JTable(matrizTabla2, titulos){
+                        /**
+                        *
+                        */
+                        private static final long serialVersionUID = 1L;
+
+                        // ***********************METODO PARA HACER QUE LA TABLA NO SEA EDITABLE, Y ASI
+                        // HACER DOBLE CLICK************************************
+                        // Para ello sobreescribimos el metodo que ya tiene la clase
+                        // JTable.isCellEditable
+                        public boolean isCellEditable(int row, int column) {
+                                for (int i = 0; i < tableIncompleteServices.getRowCount(); i++) {
+                                        if (row == i) {
+                                                return false;
+                                        }
+                                }
+                                return true;
+                        }
+                };
 					tableIncompleteServices.setSelectionBackground(new Color(109, 158, 235));
 					tableIncompleteServices.setSelectionForeground(Color.WHITE);
 					tableIncompleteServices.setRowMargin(0);
@@ -244,7 +280,8 @@ public class WindowWorker extends JDialog implements ActionListener {
 							if ((fila > -1) && (columna > -1))
 								try {
 									int confirmado = JOptionPane.showConfirmDialog(contentPanel,
-											"Are you sure you want to modify this service ? ");
+											"Are you sure you want to modify this service ? ", "Modification",
+											JOptionPane.YES_NO_OPTION);
 									if (JOptionPane.OK_OPTION == confirmado) {
 										data.markFinishedServices(
 												tableIncompleteServices.getValueAt(fila, columna).toString());
