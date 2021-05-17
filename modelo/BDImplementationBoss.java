@@ -2,6 +2,7 @@ package modelo;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.HashSet;
@@ -218,8 +219,8 @@ public class BDImplementationBoss implements InterfaceBoss {
 	}
 
 	@Override
-	public int calculateSeniority(LocalDate d) throws Exception {
-		int seniority = d.getYear() - LocalDate.now().getYear();
+	public int calculateSeniority(LocalDateTime d) throws Exception {
+		int seniority =  LocalDateTime.now().getYear()-d.getYear();
 		return seniority;
 	}
 
