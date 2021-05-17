@@ -1,6 +1,6 @@
 package modelo;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public interface InterfaceBoss {
@@ -13,6 +13,6 @@ public interface InterfaceBoss {
 	public Service addService(Service s)throws Exception;
 	public void deleteService(String cod_service)throws Exception;
 	public void modifyService(Service s)throws Exception;
-	public int calculateSeniority(LocalDate d)throws Exception;
+	public int calculateSeniority(LocalDateTime d)throws Exception;
 	public Service searchService(String code)throws Exception;
 }

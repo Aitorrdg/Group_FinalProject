@@ -1,12 +1,15 @@
 package modelo;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.sql.*;
 
 
 public class BDImplementationBoss implements InterfaceBoss {
@@ -237,8 +240,8 @@ public class BDImplementationBoss implements InterfaceBoss {
 	}
 
 	@Override
-	public int calculateSeniority(LocalDate d) throws Exception {
-		int seniority = d.getYear() - LocalDate.now().getYear();
+	public int calculateSeniority(LocalDateTime d) throws Exception {
+		int seniority = LocalDateTime.now().getYear() - d.getYear() ; 
 		return seniority;
 	}
 

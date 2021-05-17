@@ -8,6 +8,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -29,9 +32,9 @@ import com.toedter.calendar.JDateChooser;
 
 import modelo.Boss;
 import modelo.InterfaceAdministrator;
+import modelo.InterfaceBoss;
 import modelo.TextPrompt;
 import modelo.User;
-import java.awt.event.FocusAdapter;
 
 public class UserAddWindow extends JDialog implements ActionListener, FocusListener {
 
@@ -54,18 +57,22 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 	private JScrollPane scrollPane;
 	private User user;
 	private InterfaceAdministrator data;
+	private InterfaceBoss dataBoss;
 	private JRadioButton rdbtnWorker;
 	private JRadioButton rdbtnBoss;
 	private JDateChooser dateChooser;
 	private JButton btnClean;
 	private DefaultListModel<String> listModel;
 	private TextPrompt placeholder;
-	private TextPrompt placeholder_1;
+	private JLabel lblJoiningDate;
+	private User u;
+ 
+	
 
-	public UserAddWindow(InterfaceAdministrator data, boolean b) {
+	public UserAddWindow(InterfaceAdministrator data, InterfaceBoss dataBoss, boolean b) {
 		setModal(b);
 		this.data = data;
-
+		this.dataBoss=dataBoss;
 		setForeground(new Color(238, 130, 238));
 		setBounds(100, 100, 717, 409);
 		backPane = new JPanel();
@@ -125,20 +132,22 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		textFieldPassword.setHorizontalAlignment(SwingConstants.CENTER);
 		textFieldPassword.setFont(new Font("Arial", Font.ITALIC, 15));
 		textFieldPassword.addFocusListener(this);
-		placeholder_1 = new TextPrompt("Password", textFieldPassword);
+		placeholder = new TextPrompt("Password", textFieldPassword);
 		textFieldPassword.setColumns(10);
 		textFieldPassword.setBounds(53, 215, 245, 27);
 		borderPanel.add(textFieldPassword);
 
-		JLabel lblJoiningDate = new JLabel("Joining Date");
+		lblJoiningDate = new JLabel("Joining Date");
 		lblJoiningDate.setFont(new Font("Arial", Font.BOLD, 15));
 		lblJoiningDate.setBounds(346, 142, 97, 18);
 		borderPanel.add(lblJoiningDate);
+		
 
 		dateChooser = new JDateChooser();
 		dateChooser.setBounds(344, 170, 245, 27);
 		borderPanel.add(dateChooser);
 		dateChooser.setLocale(getLocale());
+		dateChooser.addFocusListener(this);
 
 		textFieldSeniority = new JTextField();
 		textFieldSeniority.setHorizontalAlignment(SwingConstants.CENTER);
@@ -203,6 +212,9 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		btnModify.setEnabled(false);
 		btnDeleteUser.setEnabled(false);
 		btnClean.setEnabled(false);
+		
+		textFieldPassword.setEditable(false);
+		textFieldSeniority.setEditable(false);
 	}
 
 	@Override
@@ -215,32 +227,78 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 			cleanTheForm();
 		}
 		if (e.getSource().equals(btnAddUser)) {
-			addNewUser();
+			try {
+				addNewUser() ;
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		if(e.getSource().equals(btnModify)) {
+			modifyUser();
 		}
 
 	}
 
-	private void addNewUser() {
+	private void modifyUser() {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@SuppressWarnings("deprecation")
+	private void addNewUser() throws Exception {
 		User u = null;
-		String password;
+		
+	
+		
 		if (rdbtnBoss.isSelected()) {
+			String password;
 			
 			if(textFieldID.getText().isBlank() || textFieldName.getText().isBlank() || textFieldSurname.getText().isBlank() || list.isSelectionEmpty() || dateChooser.getDateEditor().toString().isBlank()) {
 				JOptionPane.showConfirmDialog(this, "Please confirm that you have not missed any camp");
 			}
 			else {
+				u= new Boss();
 				u.setId(textFieldID.getText());
 				u.setName(textFieldName.getText());
 				u.setSurname(textFieldSurname.getText());
 				password=generatePassword(textFieldName.getText(),textFieldSurname.getText());
-				System.out.println(password);
+				u.setType('B');
 				u.setPassword(password);
-				textFieldPassword.setText(u.getPassword().toString());
-				 
+				((Boss)u).setSpeciality(list.getName());
+				 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+					String fecha = sdf.format(dateChooser.getDate());
+					((Boss)u).setJoiningDate(LocalDateTime.parse(fecha, formatter));
+					int sen=dataBoss.calculateSeniority(LocalDateTime.parse(fecha,formatter));
+					String seni = String.valueOf(sen);
+					textFieldSeniority.requestFocus();
+					textFieldSeniority.setText(seni);
+					((Boss)u).setSeniority(sen);
 			}
 		}
+		if(rdbtnWorker.isSelected()) {
+			list.hide();
+			dateChooser.hide();
+			textFieldSeniority.hide();
+			if(textFieldID.getText().isBlank() || textFieldName.getText().isBlank() || textFieldSurname.getText().isBlank()) {
+				JOptionPane.showConfirmDialog(this, "Please confirm that you have not missed any camp");
+				
+			}
+			else {
+				String password;
+				u.setId(textFieldID.getText());
+				u.setName(textFieldName.getText());
+				u.setSurname(textFieldSurname.getText());
+				password=generatePassword(textFieldName.getText(),textFieldSurname.getText());
+				u.setType('B');
+				u.setPassword(password);
+			}
+		}
+		u=data.addUser(u);
 	}
+
+	
 
 	private String generatePassword(String name, String surname) {
 		String password;
@@ -251,6 +309,7 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 
 	private void cleanTheForm() {
 		// TODO Auto-generated method stub
+		textFieldID.setText("");
 		textFieldID.setText("");
 		textFieldName.setText("");
 		textFieldPassword.setText("");
@@ -274,19 +333,31 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		if(e.getSource().equals(textFieldID)) {
 			btnClean.setEnabled(true);
 		}
-		if(e.getSource().equals(textFieldPassword)) {
-			String password=generatePassword(textFieldName.getText(), textFieldSurname.getText());
-			textFieldPassword.setText(password);
-		}
 		
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
 		// TODO Auto-generated method stub
-		int indexList = 0;
+		
+		if(e.getSource().equals(dateChooser)) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+			String fecha = sdf.format(dateChooser.getDate());
+			int sen;
+			try {
+				sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha,formatter));
+				String seni = String.valueOf(sen);
+				textFieldSeniority.setText(seni);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+		}
 
 		if (e.getSource().equals(textFieldID)) {
+			int indexList = 0;
 			try {
 				user = data.searchUser(textFieldID.getText());
 				if (user != null) {
@@ -306,7 +377,7 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 					if (o == 2) {
 						this.dispose();
 					}
-					if (o == 1) {
+					else if (o == 1) {
 						cleanTheForm();
 					}
 					if (o == 0) {

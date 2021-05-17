@@ -21,6 +21,7 @@ import javax.swing.border.EmptyBorder;
 
 import modelo.Boss;
 import modelo.InterfaceAdministrator;
+import modelo.InterfaceBoss;
 import modelo.TextPrompt;
 import modelo.User;
 import modelo.Worker;
@@ -41,11 +42,13 @@ public class LoginWindow extends JFrame implements ActionListener {
 	private JButton btnClose;
 	private JButton btnLogin;
 	private InterfaceAdministrator data;
+	private InterfaceBoss dataBoss;
 	private JTextField textFieldUser;
 	private TextPrompt placeholder;
 
-	public LoginWindow(InterfaceAdministrator data) {
+	public LoginWindow(InterfaceAdministrator data,InterfaceBoss dataBoss) {
 		this.data = data;
+		this.dataBoss=dataBoss;
 		setTitle("Login");
 		setResizable(false);
 		
@@ -178,7 +181,7 @@ public class LoginWindow extends JFrame implements ActionListener {
 
 		if ((comboBoxUserType.getSelectedItem().toString().equalsIgnoreCase("Admin"))) {
 			if (passwordField.getText().equals("1") && textFieldUser.getText().equalsIgnoreCase("1")) {
-				MainAdmin aw = new MainAdmin(this, true, data);
+				MainAdmin aw = new MainAdmin(this, true, data,dataBoss);
 				this.dispose();
 				aw.setVisible(true);
 			} else {

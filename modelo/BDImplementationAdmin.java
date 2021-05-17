@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class BDImplementationAdmin implements InterfaceAdministrator {
@@ -109,13 +108,15 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 			stmt.setString(2, u.getPassword());
 			stmt.setString(3, u.getName());
 			stmt.setString(4, u.getSurname());
-			stmt.setString(5, String.valueOf(u.getType()));
+			String tipo = String.valueOf(u.getType());
+			stmt.setString(5, tipo);
 			stmt.executeUpdate();
 			if (u.getType() == 'B') {
 				stmtBoss.setString(1, u.getId());
 				stmtBoss.setInt(2, ((Boss) u).getSeniority());
 				stmtBoss.setString(3, ((Boss) u).getSpeciality());
 				stmtBoss.setString(4, ((Boss) u).getJoiningDate().toString());
+			//	((Boss)uB).setJoiningDate(rsB.getTimestamp("joiningdate").toLocalDateTime());
 				stmtBoss.executeUpdate();
 			}
 

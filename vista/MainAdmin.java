@@ -16,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 
 import modelo.InterfaceAdministrator;
+import modelo.InterfaceBoss;
 import modelo.JTableUtilities;
 import modelo.User;
 
@@ -32,12 +33,14 @@ public class MainAdmin extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
 
 	private InterfaceAdministrator data;
+	private InterfaceBoss dataBoss;
 	private JTable table;
 
-	public MainAdmin(LoginWindow mainWindow, boolean b, InterfaceAdministrator data) {
+	public MainAdmin(LoginWindow mainWindow, boolean b, InterfaceAdministrator data, InterfaceBoss dataBoss) {
 		setResizable(false);
 		setModal(b);
 		this.data = data;
+		this.dataBoss=dataBoss;
 		
 		
 		getContentPane().setBackground(new Color(109, 158, 235));
@@ -98,12 +101,12 @@ public class MainAdmin extends JDialog implements ActionListener {
 //			uif.setVisible(true);
 		}
 		if (a.getSource().equals(btnUserAdd)) {
-			UserAddWindow UAW = new UserAddWindow(data, true);
+			UserAddWindow UAW = new UserAddWindow(data,dataBoss, true);
 			UAW.setVisible(true);
 		}
 		if (a.getSource().equals(btnCloseSession)) {
 			this.dispose();
-			LoginWindow ventanaPrincipal = new LoginWindow(data);
+			LoginWindow ventanaPrincipal = new LoginWindow(data,dataBoss);
 			ventanaPrincipal.setVisible(true);
 		}
 	}

@@ -1,7 +1,6 @@
 package modelo;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public interface InterfaceWorker {
 	public ArrayList<Service> listServices(String code)throws Exception;
