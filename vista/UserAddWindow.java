@@ -418,8 +418,8 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 			e.printStackTrace();
 		}
 		if (u != null) {
-			JOptionPane.showMessageDialog(this, "CODE: " + u.getId() + "\nName: " + u.getName() + "\nSurname"
-					+ u.getSurname() + "\nPassword" + u.getPassword());
+			JOptionPane.showMessageDialog(this, "CODE: " + u.getId() + "\nName: " + u.getName() + "\nSurname: "
+					+ u.getSurname() + "\nPassword: " + u.getPassword());
 		} else {
 			JOptionPane.showMessageDialog(this, "There was an error while adding the user");
 
@@ -477,47 +477,12 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 			}
 
 		}
-//			if(e.getSource().equals(textFieldSeniority)) {
-//			if(dateChooser.getDate().toString().isEmpty()) {
-//				JOptionPane.showMessageDialog(this, "Please select a date");
-//			}
-//		}else {
-//			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-//			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-//			
-//			int sen;
-//			try {
-//				String fecha = sdf.format(dateChooser.getDate());
-//				sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
-//				String seni = String.valueOf(sen);
-//				textFieldSeniority.setText(seni);
-//			} catch (Exception e1) {
-//				// TODO Auto-generated catch block
-//				JOptionPane.showMessageDialog(this, e);
-//				
-//			}			
-//		}
+
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
 		// TODO Auto-generated method stub
-
-//		if (e.getSource().equals(dateChooser.getCalendarButton().getChangeListeners())) {
-//			try {
-//				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-//				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-//				String fecha = sdf.format(dateChooser.getDate());
-//				int sen;
-//				sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
-//				String seni = String.valueOf(sen);
-//				textFieldSeniority.setText(seni);
-//			} catch (Exception e1) {
-//				// TODO Auto-generated catch block
-//				JOptionPane.showMessageDialog(this, e);
-//			}
-//
-//		}
 
 		if (e.getSource().equals(textFieldID)) {
 			int indexList = 0;
