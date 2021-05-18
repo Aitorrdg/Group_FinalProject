@@ -165,25 +165,11 @@ public class LoginWindow extends JFrame implements ActionListener {
 	@SuppressWarnings("deprecation")
 	private void login(InterfaceAdministrator data, ActionEvent a) {
 
-//		 String cmd = a.getActionCommand();
-//		 char [] password = {'a','b','c','d','*','1','2','3','4'};
-//		 
-//		 if(OK.equals(cmd)) {
-//			 char[] input = passwordField.getPassword();
-//			 if(input.equals(password)) {
-//				 AdminWindow aw = new AdminWindow(this,true,data);
-//					aw.setVisible(true);
-//			 }
-//			 else {
-//					JOptionPane.showMessageDialog(this, "Incorrect Password");
-//				}
-//		 }
-
 		if ((comboBoxUserType.getSelectedItem().toString().equalsIgnoreCase("Admin"))) {
 			if (passwordField.getText().equals("1") && textFieldUser.getText().equalsIgnoreCase("1")) {
 				MainAdmin aw = new MainAdmin(this, true, data,dataBoss);
-				this.dispose();
 				aw.setVisible(true);
+				this.dispose();
 			} else {
 				JOptionPane.showMessageDialog(this, "Incorrect Username or Password");
 			}
@@ -194,8 +180,11 @@ public class LoginWindow extends JFrame implements ActionListener {
 			User u = new Boss();
 			try {
 				u = data.searchUser(nId);
+			
 				if (u.getType() == 'B' && u.getId().equalsIgnoreCase(nId) && u.getPassword().equals(nPassword)) {
-				// MainBoss mb = new MainBoss(this, true)
+				 MainBoss mb = new MainBoss((Boss) u, dataBoss);
+				 mb.setVisible(true);
+				 this.dispose();
 				} else {
 					JOptionPane.showMessageDialog(this, "Incorrect Username or Password");
 				}

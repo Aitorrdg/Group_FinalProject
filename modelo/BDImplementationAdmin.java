@@ -10,9 +10,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class BDImplementationAdmin implements InterfaceAdministrator {
-
-	// To check Git hub
-
 	private Connection con;
 	private PreparedStatement stmt;
 	private PreparedStatement stmtBoss;
@@ -23,11 +20,8 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 	final String DeleteUser = "DELETE FROM userup WHERE code = ?";
 	final String SearchUser = "SELECT * FROM userup WHERE code = ?";
 	final String SearchBoss = "SELECT name, surname,password ,type, seniority, speciality, joiningdate FROM boss b, userup u  where u.code=? and u.code=b.code ";
-	final String ModifyUser = "UPDATE userup SET code=?, password=?,name=?,surname=?,type=? where code=?";
-	// final String ModifyBoss = "UPDATE boss b , userup u SET u.code=?
-	// password=?,name=?,surname=?,type=? b.code=?, seniority=?,
-	// speciality=?,joiningdate=? where b.code=? and u.code=?";
-	final String ModifyBoss = "UPDATE boss b , userup u  SET u.code=?, password=?,name=?,surname=?,type=?, b.code=?, seniority=?, speciality=?,joiningdate=? where b.code=u.code and u.code=?";
+	final String ModifyUser = "UPDATE userup SET  name=?,surname=?,type=? where code=?";
+	final String ModifyBoss = "UPDATE boss b , userup u  SET  password=?,name=?,surname=?,type=?, seniority=?, speciality=?,joiningdate=? where u.code=? and b.code=u.code";
 
 	private void openConnection() {
 		try {
@@ -96,11 +90,13 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 
 
 	@Override
-	public User addUser(User u) throws Exception {
+	public void addUser(User u) throws Exception {
 		// TODO Auto-generated method stub
 		this.openConnection();
-
-		try {
+		
+		if(u.getType()=='B') {
+			long milliSeconds = Timestamp.valueOf(((Boss) u).getJoiningDate()).getTime();
+			Date joiningDate = new Date(milliSeconds);
 			stmt = con.prepareStatement(InsertUser);
 			stmtBoss = con.prepareStatement(InsertBoss);
 
@@ -111,27 +107,26 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 			String tipo = String.valueOf(u.getType());
 			stmt.setString(5, tipo);
 			stmt.executeUpdate();
-			if (u.getType() == 'B') {
 				stmtBoss.setString(1, u.getId());
 				stmtBoss.setInt(2, ((Boss) u).getSeniority());
 				stmtBoss.setString(3, ((Boss) u).getSpeciality());
-				stmtBoss.setString(4, ((Boss) u).getJoiningDate().toString());
-			//	((Boss)uB).setJoiningDate(rsB.getTimestamp("joiningdate").toLocalDateTime());
+				stmtBoss.setDate(4, joiningDate);
 				stmtBoss.executeUpdate();
-			}
+		}else if(u.getType()=='W') {
+			stmt = con.prepareStatement(InsertUser);
+			
 
-		} catch (SQLException e) {
-			System.out.println("Error occured while inserting data in database");
-			e.printStackTrace();
-		} finally {
-			try {
-				this.closeConnection();
-			} catch (SQLException e1) {
-				System.out.println("An error occured while closing Database");
-				e1.printStackTrace();
-			}
+			stmt.setString(1, u.getId());
+			stmt.setString(2, u.getPassword());
+			stmt.setString(3, u.getName());
+			stmt.setString(4, u.getSurname());
+			stmt.setString(5, String.valueOf(u.getType()));
+			stmt.executeUpdate();
 		}
-		return u;
+		
+		
+
+		
 	}
 
 	@Override
@@ -194,34 +189,38 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 	}
 
 	@Override
-	public User modifyUser(User u) throws Exception {
+	public void modifyUser(User u) throws Exception {
+		
 		this.openConnection();
-
-		User b;
-		b = new User();
-		try {
-			// n=searchUser(u.getId());
-
-//			final String ModifyBoss = "UPDATE boss b , userup u  SET u.code=? password=?,name=?,surname=?,type=? b.code=?, seniority=?, speciality=?,joiningdate=? where b.code=u.code and u.code=?";
-			long milliSeconds = Timestamp.valueOf(((Boss) u).getJoiningDate()).getTime();
-			Date joiningDate = new Date(milliSeconds);
+		try {		
 			if (u.getType() == 'B') {
+				long milliSeconds = Timestamp.valueOf(((Boss) u).getJoiningDate()).getTime();
+				Date joiningDate = new Date(milliSeconds);
 				stmt = con.prepareStatement(ModifyBoss);
-				stmt.setString(1, u.getId());
-				stmt.setString(2, u.getPassword());
-				stmt.setString(3, u.getName());
-				stmt.setString(4, u.getSurname());
-				stmt.setString(5, String.valueOf(u.getType()));
-				stmt.setString(6, u.getId());
-				stmt.setInt(7, ((Boss) u).getSeniority());
-				stmt.setString(8, ((Boss) u).getSpeciality());
-				stmt.setDate(9, joiningDate);
-				stmt.setString(10, u.getId());
-				stmt.executeUpdate();
-
-			} else {
-				b = null;
+				stmt.setString(1, u.getPassword());
+				stmt.setString(2, u.getName());
+				stmt.setString(3, u.getSurname());
+				stmt.setString(4, String.valueOf(u.getType()));
+				stmt.setInt(5, ((Boss) u).getSeniority());
+				stmt.setString(6, ((Boss) u).getSpeciality());
+				stmt.setDate(7, joiningDate);
+				//stmt.setString(8, ((Boss)u).getJoiningDate().toString());
+				stmt.setString(8, u.getId());
+				if(stmt.executeUpdate()==1) {
+				
+				}
+			}else if (u.getType()=='W') {
+				stmt=con.prepareStatement(ModifyUser);
+				stmt.setString(1, u.getName());
+				stmt.setString(2, u.getSurname());
+				stmt.setString(3, String.valueOf(u.getType()));
+				stmt.setString(4, u.getId());
+				if(stmt.executeUpdate()==1) {
+				
+				}
+				
 			}
+			
 
 		} catch (SQLException e1) {
 			System.out.println("An error occured while updating");
@@ -232,7 +231,7 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 
 		}
 
-		return b;
+	
 	}
 
 }
