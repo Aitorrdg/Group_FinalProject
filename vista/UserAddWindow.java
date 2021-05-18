@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -36,7 +38,7 @@ import modelo.InterfaceBoss;
 import modelo.TextPrompt;
 import modelo.User;
 
-public class UserAddWindow extends JDialog implements ActionListener, FocusListener {
+public class UserAddWindow extends JDialog implements ActionListener, FocusListener, PropertyChangeListener {
 
 	/**
 	 * 
@@ -65,6 +67,8 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 	private TextPrompt placeholder;
 	private JLabel lblJoiningDate;
 	private User u;
+	private JButton btnCalSen;
+	// private JComponent comp;
 
 	public UserAddWindow(InterfaceAdministrator data, InterfaceBoss dataBoss, boolean b) {
 		setModal(b);
@@ -138,20 +142,25 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 
 		lblJoiningDate = new JLabel("Joining Date");
 		lblJoiningDate.setFont(new Font("Arial", Font.BOLD, 15));
-		lblJoiningDate.setBounds(346, 142, 97, 18);
+		lblJoiningDate.setBounds(344, 125, 97, 18);
 		borderPanel.add(lblJoiningDate);
 
 		dateChooser = new JDateChooser();
-		dateChooser.setBounds(344, 170, 245, 27);
+		dateChooser.getCalendarButton().addPropertyChangeListener(this);
+		dateChooser.setBounds(344, 153, 245, 27);
 		borderPanel.add(dateChooser);
 		dateChooser.setLocale(getLocale());
-		dateChooser.addFocusListener(this);
+		dateChooser.getCalendarButton().addFocusListener(this);
+
+//		IDateEditor editor = dateChooser.getDateEditor();
+//		comp = editor.getUiComponent();
+//		comp.addFocusListener(this);
 
 		textFieldSeniority = new JTextField();
 		textFieldSeniority.setHorizontalAlignment(SwingConstants.CENTER);
 		textFieldSeniority.setFont(new Font("Arial", Font.ITALIC, 15));
 		textFieldSeniority.setColumns(10);
-		textFieldSeniority.setBounds(344, 215, 245, 27);
+		textFieldSeniority.setBounds(344, 190, 245, 27);
 		borderPanel.add(textFieldSeniority);
 
 		placeholder = new TextPrompt("Seniority", textFieldSeniority);
@@ -213,6 +222,13 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 
 		textFieldPassword.setEditable(false);
 		textFieldSeniority.setEditable(false);
+
+		btnCalSen = new JButton("click");
+		btnCalSen.addActionListener(this);
+		btnCalSen.setToolTipText("Click to get Seniority");
+		btnCalSen.setFont(new Font("Arial", Font.ITALIC, 10));
+		btnCalSen.setBounds(531, 221, 58, 21);
+		borderPanel.add(btnCalSen);
 	}
 
 	@Override
@@ -248,10 +264,27 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 				e1.printStackTrace();
 			}
 		}
-
+		if(e.getSource().equals(btnCalSen)) {
+			
+				
+				try {
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+					String fecha = sdf.format(dateChooser.getDate());
+					int sen;
+					sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
+					String seni = String.valueOf(sen);
+					textFieldSeniority.setText(seni);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(this, "Please select a date");
+				}
+				
+				
+		}
 	}
 
-	private void deleteUser(User u)  {
+	private void deleteUser(User u) {
 		// TODO Auto-generated method stub
 
 		int dialogButton = JOptionPane.YES_NO_OPTION;
@@ -259,13 +292,14 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		if (dialogButton == JOptionPane.YES_OPTION) {
 			try {
 				data.deleteUser(u);
-				JOptionPane.showMessageDialog(this, "User has been deleted successfully", "Deleted", JOptionPane.OK_OPTION);
+				JOptionPane.showMessageDialog(this, "User has been deleted successfully", "Deleted",
+						JOptionPane.OK_OPTION);
 				cleanTheForm();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				JOptionPane.showMessageDialog(this, e);
 			}
-			
+
 			if (dialogButton == JOptionPane.NO_OPTION) {
 				remove(dialogButton);
 			}
@@ -275,23 +309,22 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 
 	private void modifyUser() {
 		// TODO Auto-generated method stub
-		
-		if(rdbtnBoss.isSelected()) {
+
+		if (rdbtnBoss.isSelected()) {
 			rdbtnWorker.setEnabled(false);
-			u=setBoss(u);
-		}else if(rdbtnWorker.isSelected()) {
+			u = setBoss(u);
+		} else if (rdbtnWorker.isSelected()) {
 			rdbtnBoss.setEnabled(false);
-			u=setWorker(u);
+			u = setWorker(u);
 		}
-			try {
-				data.modifyUser(u);
-				JOptionPane.showMessageDialog(this, "Modiffied correctly");
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(this, e);
-			}
-		
-		
+		try {
+			data.modifyUser(u);
+			JOptionPane.showMessageDialog(this, "Modiffied correctly");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(this, e);
+		}
+
 	}
 
 	private void addNewUser() {
@@ -304,7 +337,7 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 					|| dateChooser.getDateFormatString().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Please confirm that you have not missed any camp");
 			} else {
-				u=setBoss(u);
+				u = setBoss(u);
 				try {
 					insertUser(u);
 					JOptionPane.showMessageDialog(this, "User added correctly");
@@ -312,15 +345,15 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(this, e);
 				}
-				
+
 			}
 		} else if (rdbtnWorker.isSelected()) {
 			if (textFieldID.getText().isEmpty() || textFieldName.getText().isEmpty()
 					|| textFieldSurname.getText().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Please confirm that you have not missed any camp");
 			} else {
-				
-				u=setWorker(u);
+
+				u = setWorker(u);
 				try {
 					insertUser(u);
 					JOptionPane.showMessageDialog(this, "User added correctly");
@@ -335,7 +368,7 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 	}
 
 	private User setWorker(User u) {
-		u=setWorker(u);
+		u = setWorker(u);
 		u = new User();
 		u.setType('W');
 		String password;
@@ -361,17 +394,18 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		String fecha = sdf.format(dateChooser.getDate());
 		((Boss) u).setJoiningDate(LocalDateTime.parse(fecha, formatter));
-		int sen;
+		((Boss) u).setSeniority(Integer.parseInt(textFieldSeniority.getText()));
+//		int sen;
 		try {
-			sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
-			String seni = String.valueOf(sen);
-			textFieldSeniority.setText(seni);
-			((Boss) u).setSeniority(sen);
+//			sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
+//			String seni = String.valueOf(sen);
+//			textFieldSeniority.setText(seni);
+//			((Boss) u).setSeniority(sen);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(this, e);
 		}
-		
+
 		return u;
 	}
 
@@ -443,28 +477,47 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 			}
 
 		}
+//			if(e.getSource().equals(textFieldSeniority)) {
+//			if(dateChooser.getDate().toString().isEmpty()) {
+//				JOptionPane.showMessageDialog(this, "Please select a date");
+//			}
+//		}else {
+//			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+//			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+//			
+//			int sen;
+//			try {
+//				String fecha = sdf.format(dateChooser.getDate());
+//				sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
+//				String seni = String.valueOf(sen);
+//				textFieldSeniority.setText(seni);
+//			} catch (Exception e1) {
+//				// TODO Auto-generated catch block
+//				JOptionPane.showMessageDialog(this, e);
+//				
+//			}			
+//		}
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
 		// TODO Auto-generated method stub
 
-		if (e.getSource().equals(dateChooser)) {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-			String fecha = sdf.format(dateChooser.getDate());
-			int sen;
-
-			try {
-				sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
-				String seni = String.valueOf(sen);
-				textFieldSeniority.setText(seni);
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-		}
+//		if (e.getSource().equals(dateChooser.getCalendarButton().getChangeListeners())) {
+//			try {
+//				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+//				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+//				String fecha = sdf.format(dateChooser.getDate());
+//				int sen;
+//				sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
+//				String seni = String.valueOf(sen);
+//				textFieldSeniority.setText(seni);
+//			} catch (Exception e1) {
+//				// TODO Auto-generated catch block
+//				JOptionPane.showMessageDialog(this, e);
+//			}
+//
+//		}
 
 		if (e.getSource().equals(textFieldID)) {
 			int indexList = 0;
@@ -513,7 +566,7 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 							rdbtnWorker.setSelected(true);
 							fieldWorker();
 						}
-						
+
 					}
 
 				}
@@ -530,5 +583,26 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		list.setEnabled(false);
 		dateChooser.setEnabled(false);
 		textFieldSeniority.setEnabled(false);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
+
+		if (evt.getSource().equals(dateChooser.getCalendarButton().getPropertyChangeListeners())) {
+			try {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+				String fecha = sdf.format(dateChooser.getDate());
+				int sen;
+				sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
+				String seni = String.valueOf(sen);
+				textFieldSeniority.setText(seni);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(this, e);
+			}
+		}
+
 	}
 }
