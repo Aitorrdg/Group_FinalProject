@@ -186,7 +186,7 @@ public class LoginWindow extends JFrame implements ActionListener {
 			try {
 				u = data.searchUser(nId);
 				if (u.getType() == 'B' && u.getId().equalsIgnoreCase(nId) && u.getPassword().equals(nPassword)) {
-				 MainBoss mb = new MainBoss((Boss) u, dataBoss);
+				 MainBoss mb = new MainBoss(u, dataBoss);
 				 mb.setVisible(true);
 				 this.dispose();
 				} else {
@@ -194,7 +194,7 @@ public class LoginWindow extends JFrame implements ActionListener {
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(backPane, "Zeeshan");
+				JOptionPane.showMessageDialog(backPane,e);
 			}
 		}
 		if(comboBoxUserType.getSelectedItem().toString().equalsIgnoreCase("Worker")) {

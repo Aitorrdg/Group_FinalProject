@@ -46,10 +46,12 @@ public class BDImplementationBoss implements InterfaceBoss {
 	public void addWorker(Worker worker) throws Exception {
 		con=conection.openConnection();
 		try {
-			stmt = con.prepareStatement("insert into worker values(?,?,?)");
-			stmt.setString(1, worker.getId());
+			stmt = con.prepareStatement("update worker w,user u set code_b=?,salary=?,name=?,surname=? where w.code=? and w.code=u.code");
+			stmt.setString(1,worker.getBossId());
 			stmt.setDouble(2, worker.getSalary());
-			stmt.setString(3, worker.getBossId());
+			stmt.setString(3,worker.getName());
+			stmt.setString(4, worker.getSurname());
+			stmt.setString(5,worker.getId());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 		} finally {
@@ -76,11 +78,12 @@ public class BDImplementationBoss implements InterfaceBoss {
 	public void modifyWorker(Worker worker) throws Exception {
 		con=conection.openConnection();
 		try {
-			stmt = con.prepareStatement("update worker w,user u set salary=?,name=?,surname=? where w.code=? and w.code=u.code");
-			stmt.setDouble(1, worker.getSalary());
-			stmt.setString(2,worker.getName());
-			stmt.setString(3, worker.getSurname());
-			stmt.setString(4,worker.getId());
+			stmt = con.prepareStatement("update worker w,user u set code_b=?,salary=?,name=?,surname=? where w.code=? and w.code=u.code");
+			stmt.setString(1,worker.getBossId());
+			stmt.setDouble(2, worker.getSalary());
+			stmt.setString(3,worker.getName());
+			stmt.setString(4, worker.getSurname());
+			stmt.setString(5,worker.getId());
 			stmt.executeUpdate();
 		} catch (SQLException e) {
 
@@ -97,18 +100,19 @@ public class BDImplementationBoss implements InterfaceBoss {
 
 		con=conection.openConnection();
 		try {
-			stmt = con.prepareStatement("select w.*,u.name,u.surname from worker w,user u where w.code=? and w.code=u.code");
+			stmt = con.prepareStatement("select salary,code_b,u.name,u.surname from worker w,user u where w.code=? and w.code=u.code");
 			stmt.setString(1, id);
 			rs = stmt.executeQuery();
 			if (rs.next()) {
 				worker = new Worker();
-				worker.setId(rs.getString("code"));
-				worker.setSalary(rs.getDouble("salary"));
-				worker.setName(rs.getString("name"));
-				worker.setSurname(rs.getString("surname"));
+				worker.setId(id);
+				worker.setSalary(rs.getDouble(1));
+				worker.setBossId(rs.getString(2));
+				worker.setName(rs.getString(3));
+				worker.setSurname(rs.getString(4));
 			}
 		} catch (SQLException e) {
-
+			
 		} finally {
 			conection.closeConnection(stmt,con);
 			rs.close();
@@ -171,7 +175,7 @@ public class BDImplementationBoss implements InterfaceBoss {
 			stmt.setTimestamp(4, dateEnd);
 			stmt.executeUpdate();
 		} catch (SQLException e) {
-
+			
 		} finally {
 			conection.closeConnection(stmt,con);
 		}

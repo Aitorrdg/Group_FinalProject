@@ -38,9 +38,11 @@ public class MainBoss extends JFrame implements ActionListener {
 	private Set<Worker> workers;
 	private Set<Service>services;
 	private InterfaceBoss datosBoss;
+	private User b;
 	
-	public MainBoss(Boss b, InterfaceBoss datosBoss) {
+	public MainBoss(User b, InterfaceBoss datosBoss) {
 		this.datosBoss = datosBoss;
+		this.b=b;
 		try {
 			workers = datosBoss.listWorkers();
 		} catch (Exception e1) {
@@ -116,7 +118,7 @@ public class MainBoss extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnManageWorkers)) {
-			AddEditDeleteWindow aedw = new AddEditDeleteWindow(datosBoss, workers);
+			AddEditDeleteWindow aedw = new AddEditDeleteWindow(datosBoss, workers,b);
 			this.dispose();
 			aedw.setVisible(true);
 		}

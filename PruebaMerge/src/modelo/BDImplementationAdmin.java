@@ -15,14 +15,15 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 	private PreparedStatement stmtBoss;
 	private ConnectionOpenClose conection = new ConnectionOpenClose();
 
-	final String insertUser = "INSERT INTO userup (code, password, name, surname, type) VALUES (?, ?, ?, ?, ?)";
+	final String insertUser = "INSERT INTO user (code, password, name, surname, type) VALUES (?, ?, ?, ?, ?)";
+	final String insertWorker="INSERT INTO worker (code) values(?)";
 	final String insertBoss = "INSERT INTO boss (code, seniority, speciality,joiningdate) VALUES (?, ?, ?,?)";
 	final String getUserList = "SELECT * FROM user";
-	final String deleteUser = "DELETE FROM user WHERE code = ?";
+	final String deleteUser = "DELETE FROM user code = ?";
 	final String searchUser = "SELECT * FROM user where code=?";
 	final String searchWorker = "SELECT u.*,code_b,salary FROM user u,worker w WHERE u.code = ? and u.code=w.code";
 	final String searchBoss = "SELECT name, surname,password ,type, seniority, speciality, joining_date FROM boss b, user u  where u.code=? and u.code=b.code ";
-	final String modifyUser = "UPDATE userup SET  name=?,surname=?,type=? where code=?";
+	final String modifyUser = "UPDATE user SET  name=?,surname=?,type=? where code=?";
 	final String modifyBoss = "UPDATE boss b , user u  SET  password=?,name=?,surname=?,type=?, seniority=?, speciality=?,joiningdate=? where u.code=? and b.code=u.code";
 
 	@Override
@@ -38,9 +39,7 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 		stmt.setString(1, id);
 		rs = stmt.executeQuery();
 		if (rs.next()) {
-			u = new User();
-			u.setType(rs.getString("Type").charAt(0));
-			if (u.getType()=='B') {
+			if (rs.getString("type").charAt(0)=='B') {
 				stmt = con.prepareStatement(searchBoss);
 				stmt.setString(1, id);
 				rsB = stmt.executeQuery();
@@ -59,7 +58,7 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 				}
 				
 			}
-			if(u.getType()=='W'){
+			else if(rs.getString("type").charAt(0)=='W'){
 				stmt = con.prepareStatement(searchWorker);
 				stmt.setString(1, id);
 				rs.close();
@@ -78,11 +77,13 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 			}
 		}
 		} catch (SQLException e) {
-
 		} finally {
 			conection.closeConnection(stmt,con);
-			rs.close();
-			rsB.close();
+			if(rs!=null)
+				rs.close();
+			if(rsB!=null)
+				rsB.close();
+			
 		}
 
 		return u;
@@ -123,6 +124,9 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 			stmt.setString(4, u.getSurname());
 			stmt.setString(5, String.valueOf(u.getType()));
 			stmt.executeUpdate();
+			stmt=con.prepareStatement(insertWorker);
+			stmt.setString(1,u.getId());
+			stmt.executeUpdate();
 		}
 		} catch (SQLException e) {
 
@@ -140,7 +144,6 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 		con=conection.openConnection();
 		try {
 			stmt = con.prepareStatement(deleteUser);
-
 			stmt.setString(1, u.getId());
 			stmt.executeUpdate();
 		} catch (SQLException e) {

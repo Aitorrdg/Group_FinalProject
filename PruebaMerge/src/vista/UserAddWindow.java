@@ -394,12 +394,12 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		String fecha = sdf.format(dateChooser.getDate());
 		((Boss) u).setJoiningDate(LocalDateTime.parse(fecha, formatter));
 		((Boss) u).setSeniority(Integer.parseInt(textFieldSeniority.getText()));
-//		int sen;
+		int sen;
 		try {
-//			sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
-//			String seni = String.valueOf(sen);
-//			textFieldSeniority.setText(seni);
-//			((Boss) u).setSeniority(sen);
+			sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
+			String seni = String.valueOf(sen);
+			textFieldSeniority.setText(seni);
+			((Boss) u).setSeniority(sen);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(this, e);
@@ -535,10 +535,10 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 
 				}
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this, e);
 			}
 		}
+
 	}
 
 	private void fieldWorker() {

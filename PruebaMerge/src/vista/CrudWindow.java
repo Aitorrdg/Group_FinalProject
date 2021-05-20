@@ -1,23 +1,19 @@
 package vista;
 
-import java.awt.BorderLayout;
+
 import java.awt.Color;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ChangeListener;
-import javax.swing.text.MaskFormatter;
 
-import modelo.Boss;
 import modelo.InterfaceBoss;
 import modelo.Service;
+import modelo.User;
 import modelo.Worker;
 
 import java.awt.Font;
@@ -29,11 +25,11 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
+
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
+import java.util.Set;
 
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
@@ -43,7 +39,6 @@ import javax.swing.JLabel;
 
 public class CrudWindow extends JDialog implements ActionListener, FocusListener {
 
-	private final JPanel contentPanel = new JPanel();
 	private JPanel borderPane;
 	private JTextField textCode;
 	private JTextField textName;
@@ -68,7 +63,7 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 	private JButton btnAddService;
 	private NumberFormat decimalFormat=new DecimalFormat("####.##");
 
-	public CrudWindow(InterfaceBoss datosBoss, String id, String name, String password, String surname, String bossId) {
+	public CrudWindow(InterfaceBoss datosBoss, String id, String name, String surname, String bossId) {
 		idBoss = bossId;
 		this.datosBoss = datosBoss;
 		setModal(true);
@@ -140,14 +135,16 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		btnAddWorker.setBackground(Color.WHITE);
 		btnAddWorker.setBounds(250, 147, 143, 31);
 		btnAddWorker.addActionListener(this);
-		backPanel.add(btnModifyWorker);
+		backPanel.add(btnAddWorker);
 	}
 
 	/**
+	 * @param idBoss 
 	 * @wbp.parser.constructor
 	 */
-	public CrudWindow(InterfaceBoss datosBoss, Worker w) {
+	public CrudWindow(InterfaceBoss datosBoss, Worker w, String idBoss) {
 		this.datosBoss = datosBoss;
+		this.idBoss=idBoss;
 		worker = w;
 		setModal(true);
 		setResizable(false);
@@ -219,8 +216,9 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 
 	}
 
-	public CrudWindow(Worker w, InterfaceBoss datosBoss) {
+	public CrudWindow(Worker w, InterfaceBoss datosBoss,String idBoss) {
 		this.datosBoss = datosBoss;
+		this.idBoss=idBoss;
 		worker = w;
 		setModal(true);
 		setResizable(false);
@@ -661,6 +659,9 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 			JOptionPane.showMessageDialog(this,
 					"SERVICE ADDED CORRECTLY, THE CODE OF THE SERVICE IS:" + service.getCodeService());
 			this.dispose();
+			Set<Service>services=datosBoss.listServices();
+			AddEditDeleteWindow aedw=new AddEditDeleteWindow(datosBoss,services);
+			aedw.setVisible(true);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e);
 		}
@@ -673,6 +674,9 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 			try {
 				datosBoss.deleteService(service.getCodeService());
 				JOptionPane.showMessageDialog(this, "SERVICE DELETED CORRECTLY");
+				Set<Service>services=datosBoss.listServices();
+				AddEditDeleteWindow aedw=new AddEditDeleteWindow(datosBoss,services);
+				aedw.setVisible(true);
 				this.dispose();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, e);
@@ -701,6 +705,9 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 				service.setDate_time_end(LocalDateTime.parse(spinnerEnd, formato));
 				datosBoss.modifyService(service);
 				JOptionPane.showMessageDialog(this, "SERVICE MODIFIED CORRECTLY");
+				Set<Service>services=datosBoss.listServices();
+				AddEditDeleteWindow aedw=new AddEditDeleteWindow(datosBoss,services);
+				aedw.setVisible(true);
 				this.dispose();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, e);
@@ -710,13 +717,17 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		}
 	}
 
-	private void deleteWorker() {
+	private void deleteWorker(){
 		int reply = JOptionPane.showConfirmDialog(this, "ARE YOU SURE THAT YOU WANT TO DELETE THIS WORKER?",
 				"CONFIRMATION WINDOW", JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
 			try {
 				datosBoss.deleteWorker(worker.getId());
 				JOptionPane.showMessageDialog(this, "WORKER DELETED CORRECTLY");
+				Set<Worker>workers=datosBoss.listWorkers();
+				User u=worker;
+				AddEditDeleteWindow aedw=new AddEditDeleteWindow(datosBoss,workers,u);
+				aedw.setVisible(true);
 				this.dispose();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, e);
@@ -730,12 +741,18 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		worker.setName(textName.getText());
 		worker.setSurname(textSurname.getText());
 		worker.setSalary(Double.parseDouble(textSalary.getText()));
+		worker.setBossId(idBoss);
+		worker.setType('W');
 		int reply = JOptionPane.showConfirmDialog(this, "ARE YOU SURE THAT YOU WANT TO MODIFY THIS WORKER?",
 				"CONFIRMATION WINDOW", JOptionPane.YES_NO_OPTION);
 		if (reply == JOptionPane.YES_OPTION) {
 			try {
 				datosBoss.modifyWorker(worker);
 				JOptionPane.showMessageDialog(this, "WORKER MODIFIED CORRECTLY");
+				Set<Worker>workers=datosBoss.listWorkers();
+				User u=worker;
+				AddEditDeleteWindow aedw=new AddEditDeleteWindow(datosBoss,workers,u);
+				aedw.setVisible(true);
 				this.dispose();
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(this, e);
@@ -749,13 +766,18 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 		Worker worker = new Worker();
 		worker.setId(textCode.getText());
 		worker.setName(textName.getText());
-		worker.setPassword(textSurname.getText());
-		worker.setSalary(Double.parseDouble((String) textSalary.getValue()));
+		worker.setSurname(textSurname.getText());
+		worker.setSalary(Double.parseDouble(textSalary.getText()));
 		worker.setBossId(idBoss);
 		worker.setType('W');
+		this.worker=worker;
 		try {
 			datosBoss.addWorker(worker);
 			JOptionPane.showMessageDialog(this, "WORKER ADDED CORRECTLY");
+			Set<Worker>workers=datosBoss.listWorkers();
+			User u=worker;
+			AddEditDeleteWindow aedw=new AddEditDeleteWindow(datosBoss,workers,u);
+			aedw.setVisible(true);
 			this.dispose();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(this, e);

@@ -1,23 +1,23 @@
 package vista;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
+
 import java.util.ArrayList;
 import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
+
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
-import modelo.Boss;
+
 import modelo.InterfaceBoss;
 import modelo.Service;
+import modelo.User;
 import modelo.Worker;
 import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
@@ -32,6 +32,8 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 
 	private static final long serialVersionUID = 1L;
 	private JPanel borderPane;
+	private JPanel borderPaneService;
+	private JPanel backPanelService;
 	private JButton btnAddWorker;
 	private JButton btnModifyWorker;
 	private JButton btnDeleteWorker;
@@ -46,9 +48,11 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 	private JTable tableWorkers;
 	private Worker worker;
 	private Service service;
+	private User u;
 
-	public AddEditDeleteWindow(InterfaceBoss datosBoss, Set<Worker> workers) {
+	public AddEditDeleteWindow(InterfaceBoss datosBoss, Set<Worker> workers, User b) {
 		this.datosBoss = datosBoss;
+		u=b;
 		setModal(true);
 		setResizable(false);
 		setForeground(new Color(238, 130, 238));
@@ -90,6 +94,7 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 		btnAddWorker.setBackground(Color.WHITE);
 		btnAddWorker.setBounds(10, 321, 143, 39);
 		btnAddWorker.addActionListener(this);
+		btnAddWorker.setEnabled(false);
 		backPanel.add(btnAddWorker);
 
 		tableCreationWorker(workers);
@@ -104,18 +109,18 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 		setResizable(false);
 		setForeground(new Color(238, 130, 238));
 		setBounds(100, 100, 857, 524);
-		borderPane = new JPanel();
-		borderPane.setBackground(new Color(109, 158, 235));
-		borderPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(borderPane);
-		borderPane.setLayout(null);
-		backPanel = new JPanel();
-		backPanel.setBounds(25, 28, 801, 435);
-		backPanel.setBackground(new Color(207, 226, 243));
-		backPanel.addMouseListener(this);
-		borderPane.add(backPanel);
-		borderPane.addMouseListener(this);
-		backPanel.setLayout(null);
+		borderPaneService = new JPanel();
+		borderPaneService.setBackground(new Color(109, 158, 235));
+		borderPaneService.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(borderPaneService);
+		borderPaneService.setLayout(null);
+		backPanelService = new JPanel();
+		backPanelService.setBounds(25, 28, 801, 435);
+		backPanelService.setBackground(new Color(207, 226, 243));
+		backPanelService.addMouseListener(this);
+		borderPaneService.add(backPanelService);
+		borderPaneService.addMouseListener(this);
+		backPanelService.setLayout(null);
 
 		btnModifyService = new JButton("MODIFY");
 		btnModifyService.setFont(new Font("Arial", Font.BOLD, 14));
@@ -124,7 +129,7 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 		btnModifyService.setBounds(318, 321, 143, 39);
 		btnModifyService.setEnabled(false);
 		btnModifyService.addActionListener(this);
-		backPanel.add(btnModifyService);
+		backPanelService.add(btnModifyService);
 
 		btnDeleteService = new JButton("DELETE");
 		btnDeleteService.setFont(new Font("Arial", Font.BOLD, 14));
@@ -133,7 +138,7 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 		btnDeleteService.setBounds(618, 321, 143, 39);
 		btnDeleteService.setEnabled(false);
 		btnDeleteService.addActionListener(this);
-		backPanel.add(btnDeleteService);
+		backPanelService.add(btnDeleteService);
 
 		btnAddService = new JButton("ADD");
 		btnAddService.setFont(new Font("Arial", Font.BOLD, 14));
@@ -141,7 +146,55 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 		btnAddService.setBackground(Color.WHITE);
 		btnAddService.setBounds(10, 321, 143, 39);
 		btnAddService.addActionListener(this);
-		backPanel.add(btnAddService);
+		backPanelService.add(btnAddService);
+
+		tableCreationService(services);
+	}
+
+	public AddEditDeleteWindow(InterfaceBoss datosBoss, Set<Service> services) {
+		this.datosBoss = datosBoss;
+		setModal(true);
+		setResizable(false);
+		setForeground(new Color(238, 130, 238));
+		setBounds(100, 100, 857, 524);
+		borderPaneService = new JPanel();
+		borderPaneService.setBackground(new Color(109, 158, 235));
+		borderPaneService.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(borderPaneService);
+		borderPaneService.setLayout(null);
+		backPanelService = new JPanel();
+		backPanelService.setBounds(25, 28, 801, 435);
+		backPanelService.setBackground(new Color(207, 226, 243));
+		backPanelService.addMouseListener(this);
+		borderPaneService.add(backPanelService);
+		borderPaneService.addMouseListener(this);
+		backPanelService.setLayout(null);
+
+		btnModifyService = new JButton("MODIFY");
+		btnModifyService.setFont(new Font("Arial", Font.BOLD, 14));
+		btnModifyService.setBorder(new LineBorder(new Color(109, 158, 235)));
+		btnModifyService.setBackground(Color.WHITE);
+		btnModifyService.setBounds(318, 321, 143, 39);
+		btnModifyService.setEnabled(false);
+		btnModifyService.addActionListener(this);
+		backPanelService.add(btnModifyService);
+
+		btnDeleteService = new JButton("DELETE");
+		btnDeleteService.setFont(new Font("Arial", Font.BOLD, 14));
+		btnDeleteService.setBorder(new LineBorder(new Color(109, 158, 235)));
+		btnDeleteService.setBackground(Color.WHITE);
+		btnDeleteService.setBounds(618, 321, 143, 39);
+		btnDeleteService.setEnabled(false);
+		btnDeleteService.addActionListener(this);
+		backPanelService.add(btnDeleteService);
+
+		btnAddService = new JButton("ADD");
+		btnAddService.setFont(new Font("Arial", Font.BOLD, 14));
+		btnAddService.setBorder(new LineBorder(new Color(109, 158, 235)));
+		btnAddService.setBackground(Color.WHITE);
+		btnAddService.setBounds(10, 321, 143, 39);
+		btnAddService.addActionListener(this);
+		backPanelService.add(btnAddService);
 
 		tableCreationService(services);
 	}
@@ -151,7 +204,7 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 		String information[][] = null;
 		JScrollPane scrollTable = new JScrollPane();
 		scrollTable.setBounds(10, 90, 780, 190);
-		backPanel.add(scrollTable);
+		backPanelService.add(scrollTable);
 		information = new String[services.size()][7];
 		for (int i = 0; i < information.length; i++) {
 			for (Service s : services) {
@@ -225,7 +278,7 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 			for (Worker w : workers) {
 				listWorkers.add(w);
 			}
-			information[i][0] = "  " + listWorkers.get(i).getId();
+			information[i][0] = listWorkers.get(i).getId();
 			information[i][1] = "     " + listWorkers.get(i).getName();
 			information[i][2] = "     " + listWorkers.get(i).getSurname();
 			information[i][3] = "     " + String.valueOf(listWorkers.get(i).getSalary());
@@ -272,22 +325,18 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnAddWorker)) {
-			if (worker.getSalary() == 0) {
-				CrudWindow crW = new CrudWindow(datosBoss, worker.getId(), worker.getName(), worker.getPassword(),
-						worker.getSurname(), worker.getBossId());
+
+				CrudWindow crW = new CrudWindow(datosBoss, worker.getId(), worker.getName(),worker.getSurname(),u.getId());
 				this.dispose();
 				crW.setVisible(true);
-			} else {
-				JOptionPane.showMessageDialog(this, "This worker has already all the information");
-			}
 		}
 		if (e.getSource().equals(btnModifyWorker)) {
-			CrudWindow crW = new CrudWindow(datosBoss, worker);
+			CrudWindow crW = new CrudWindow(datosBoss,worker,u.getId());
 			this.dispose();
 			crW.setVisible(true);
 		}
 		if (e.getSource().equals(btnDeleteWorker)) {
-			CrudWindow crW = new CrudWindow(worker, datosBoss);
+			CrudWindow crW = new CrudWindow(worker,datosBoss,u.getId());
 			this.dispose();
 			crW.setVisible(true);
 		}
@@ -317,9 +366,11 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 				try {
 					String code = tableWorkers.getValueAt(fila, columna).toString();
 					worker = datosBoss.searchWorker(code);
-					btnAddWorker.setEnabled(false);
-					btnDeleteWorker.setEnabled(true);
+					
+					btnAddWorker.setEnabled(true);
 					btnModifyWorker.setEnabled(true);
+					btnDeleteWorker.setEnabled(true);
+					
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(this, "ERROR WHILE SEARCHING WORKER");
 				}
@@ -331,7 +382,7 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 				try {
 					String code = tableService.getValueAt(fila, columna).toString();
 					service = datosBoss.searchService(code);
-					btnAddService.setEnabled(false);
+					btnAddService.setEnabled(true);
 					btnDeleteService.setEnabled(true);
 					btnModifyService.setEnabled(true);
 				} catch (Exception e1) {
@@ -339,6 +390,11 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 				}
 		}
 		if(e.getSource().equals(backPanel)||e.getSource().equals(borderPane)) {
+			btnAddWorker.setEnabled(false);
+			btnDeleteWorker.setEnabled(false);
+			btnModifyWorker.setEnabled(false);
+		}
+		if(e.getSource().equals(backPanelService)||e.getSource().equals(borderPaneService)) {
 			btnAddService.setEnabled(true);
 			btnDeleteService.setEnabled(false);
 			btnModifyService.setEnabled(false);
@@ -371,3 +427,4 @@ public class AddEditDeleteWindow extends JDialog implements ActionListener, Mous
 	}
 
 }
+
