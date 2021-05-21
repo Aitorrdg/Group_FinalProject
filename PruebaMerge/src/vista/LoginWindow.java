@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -167,11 +168,11 @@ public class LoginWindow extends JFrame implements ActionListener {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	private void login(InterfaceAdministrator data, ActionEvent a) {
-
+		char[] password = passwordField.getPassword();
+		char [] passAdmin =new char[] {'a','b','c','d','*','1','2','3','4'};
 		if ((comboBoxUserType.getSelectedItem().toString().equalsIgnoreCase("Admin"))) {
-			if (passwordField.getText().equals(adminPasswd) && textFieldUser.getText().equalsIgnoreCase(adminUserName)) {
+			if (Arrays.equals(password, passAdmin) && textFieldUser.getText().equalsIgnoreCase(adminUserName)) {
 				MainAdmin aw = new MainAdmin(this, true, data,dataBoss,dataWorker);
 				aw.setVisible(true);
 				this.dispose();
@@ -181,12 +182,16 @@ public class LoginWindow extends JFrame implements ActionListener {
 		}
 		if (comboBoxUserType.getSelectedItem().toString().equalsIgnoreCase("Boss")) {
 			String nId = textFieldUser.getText();
-			String nPassword = passwordField.getText();
 			User u = new Boss();
 			try {
 				u = data.searchUser(nId);
-				if (u.getType() == 'B' && u.getId().equalsIgnoreCase(nId) && u.getPassword().equals(nPassword)) {
-				 MainBoss mb = new MainBoss(u, dataBoss);
+				String pass=u.getPassword();
+				char[] chB = new char[pass.length()];
+				for (int i = 0; i < pass.length(); i++) {
+		            chB[i] = pass.charAt(i);
+		        }
+				if (u.getType() == 'B' && u.getId().equalsIgnoreCase(nId) && Arrays.equals(password, chB)) {
+				 MainBoss mb = new MainBoss((Boss) u, dataBoss);
 				 mb.setVisible(true);
 				 this.dispose();
 				} else {
@@ -199,11 +204,16 @@ public class LoginWindow extends JFrame implements ActionListener {
 		}
 		if(comboBoxUserType.getSelectedItem().toString().equalsIgnoreCase("Worker")) {
 			String nId = textFieldUser.getText();
-			String nPassword = passwordField.getText();
+			
 			User w = new Worker();
 			try {
-				w =  data.searchUser(nId);
-				if (w.getType() == 'W' && w.getId().equalsIgnoreCase(nId) && w.getPassword().equals(nPassword)) {
+				w = data.searchUser(nId);
+				String pass=w.getPassword();
+				char[] chW = new char[pass.length()];
+				for (int i = 0; i < pass.length(); i++) {
+		            chW[i] = pass.charAt(i);
+		        }
+				if (w.getType() == 'W' && w.getId().equalsIgnoreCase(nId) && Arrays.equals(password, chW)) {
 					WindowWorker mw = new WindowWorker(w,dataWorker);
 					mw.setVisible(true);
 					this.dispose();

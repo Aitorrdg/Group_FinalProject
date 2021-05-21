@@ -725,7 +725,8 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 				datosBoss.deleteWorker(worker.getId());
 				JOptionPane.showMessageDialog(this, "WORKER DELETED CORRECTLY");
 				Set<Worker>workers=datosBoss.listWorkers();
-				User u=worker;
+				User u=new User();
+				u.setId(idBoss);
 				AddEditDeleteWindow aedw=new AddEditDeleteWindow(datosBoss,workers,u);
 				aedw.setVisible(true);
 				this.dispose();
@@ -750,7 +751,8 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 				datosBoss.modifyWorker(worker);
 				JOptionPane.showMessageDialog(this, "WORKER MODIFIED CORRECTLY");
 				Set<Worker>workers=datosBoss.listWorkers();
-				User u=worker;
+				User u=new User();
+				u.setId(idBoss);
 				AddEditDeleteWindow aedw=new AddEditDeleteWindow(datosBoss,workers,u);
 				aedw.setVisible(true);
 				this.dispose();
@@ -775,7 +777,8 @@ public class CrudWindow extends JDialog implements ActionListener, FocusListener
 			datosBoss.addWorker(worker);
 			JOptionPane.showMessageDialog(this, "WORKER ADDED CORRECTLY");
 			Set<Worker>workers=datosBoss.listWorkers();
-			User u=worker;
+			User u=new User();
+			u.setId(idBoss);
 			AddEditDeleteWindow aedw=new AddEditDeleteWindow(datosBoss,workers,u);
 			aedw.setVisible(true);
 			this.dispose();

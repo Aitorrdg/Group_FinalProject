@@ -17,14 +17,14 @@ public class BDImplementationAdmin implements InterfaceAdministrator {
 
 	final String insertUser = "INSERT INTO user (code, password, name, surname, type) VALUES (?, ?, ?, ?, ?)";
 	final String insertWorker="INSERT INTO worker (code) values(?)";
-	final String insertBoss = "INSERT INTO boss (code, seniority, speciality,joiningdate) VALUES (?, ?, ?,?)";
+	final String insertBoss = "INSERT INTO boss VALUES (?,?,?,?)";
 	final String getUserList = "SELECT * FROM user";
-	final String deleteUser = "DELETE FROM user code = ?";
+	final String deleteUser = "DELETE FROM user where code = ?";
 	final String searchUser = "SELECT * FROM user where code=?";
 	final String searchWorker = "SELECT u.*,code_b,salary FROM user u,worker w WHERE u.code = ? and u.code=w.code";
 	final String searchBoss = "SELECT name, surname,password ,type, seniority, speciality, joining_date FROM boss b, user u  where u.code=? and u.code=b.code ";
 	final String modifyUser = "UPDATE user SET  name=?,surname=?,type=? where code=?";
-	final String modifyBoss = "UPDATE boss b , user u  SET  password=?,name=?,surname=?,type=?, seniority=?, speciality=?,joiningdate=? where u.code=? and b.code=u.code";
+	final String modifyBoss = "UPDATE boss b , user u  SET  password=?,name=?,surname=?,type=?, seniority=?, speciality=?,joining_date=? where u.code=? and b.code=u.code";
 
 	@Override
 	public User searchUser(String id) throws Exception {
