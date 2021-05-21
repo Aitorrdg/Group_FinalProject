@@ -13,6 +13,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -29,14 +31,15 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import com.toedter.calendar.JDateChooser;
 
 import modelo.Boss;
 import modelo.InterfaceAdministrator;
 import modelo.InterfaceBoss;
-import modelo.TextPrompt;
 import modelo.User;
+import resources.TextPrompt;
 
 public class UserAddWindow extends JDialog implements ActionListener, FocusListener, PropertyChangeListener {
 
@@ -68,7 +71,6 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 	private JLabel lblJoiningDate;
 	private User u;
 	private JButton btnCalSen;
-	// private JComponent comp;
 
 	public UserAddWindow(InterfaceAdministrator data, InterfaceBoss dataBoss, boolean b) {
 		setModal(b);
@@ -152,9 +154,6 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		dateChooser.setLocale(getLocale());
 		dateChooser.getCalendarButton().addFocusListener(this);
 
-//		IDateEditor editor = dateChooser.getDateEditor();
-//		comp = editor.getUiComponent();
-//		comp.addFocusListener(this);
 
 		textFieldSeniority = new JTextField();
 		textFieldSeniority.setHorizontalAlignment(SwingConstants.CENTER);
@@ -170,37 +169,43 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		btnAddUser = new JButton("Add User");
 		btnAddUser.setFont(new Font("Arial", Font.BOLD, 15));
 		btnAddUser.setBounds(33, 268, 110, 27);
+		btnAddUser.setBackground(Color.WHITE);
+		btnAddUser.setBorder(new LineBorder(new Color(109, 158, 235)));
 		borderPanel.add(btnAddUser);
 		btnAddUser.addActionListener(this);
 
 		btnModify = new JButton("Modify");
 		btnModify.setFont(new Font("Arial", Font.BOLD, 15));
 		btnModify.setBounds(153, 268, 110, 27);
+		btnModify.setBackground(Color.WHITE);
+		btnModify.setBorder(new LineBorder(new Color(109, 158, 235)));
 		borderPanel.add(btnModify);
 		btnModify.addActionListener(this);
 
 		btnDeleteUser = new JButton("Delete");
-		btnDeleteUser.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnDeleteUser.setFont(new Font("Arial", Font.BOLD, 15));
 		btnDeleteUser.setBounds(273, 267, 110, 27);
+		btnDeleteUser.setBackground(Color.WHITE);
+		btnDeleteUser.setBorder(new LineBorder(new Color(109, 158, 235)));
 		borderPanel.add(btnDeleteUser);
 		btnDeleteUser.addActionListener(this);
 
 		btnClose = new JButton("Close");
 		btnClose.setFont(new Font("Arial", Font.ITALIC, 15));
 		btnClose.setBounds(513, 268, 110, 27);
+		btnClose.setBackground(Color.WHITE);
+		btnClose.setBorder(new LineBorder(new Color(109, 158, 235)));
 		borderPanel.add(btnClose);
 		btnClose.addActionListener(this);
 
 		listModel = new DefaultListModel<String>();
-		listModel.addElement("Barrer");
-		listModel.addElement("A");
-		listModel.addElement("NADAnnnnnn");
-		listModel.addElement("B");
-		listModel.addElement("B");
-		listModel.addElement("B");
-		listModel.addElement("B");
-		listModel.addElement("B");
-		listModel.addElement("B");
+		listModel.addElement("Worker Managing");
+		listModel.addElement("Stock Managing");
+		listModel.addElement("Training Manager");
+		listModel.addElement("Technichal Supervisor");
+		listModel.addElement("Worker Safety Manager");
+		listModel.addElement("Zone Manager");
+		listModel.addElement("PR Manager");
 
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(344, 26, 245, 88);
@@ -213,6 +218,8 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		btnClean = new JButton("Clean");
 		btnClean.addActionListener(this);
 		btnClean.setFont(new Font("Arial", Font.ITALIC, 15));
+		btnClean.setBorder(new LineBorder(new Color(109, 158, 235)));
+		btnClean.setBackground(Color.WHITE);
 		btnClean.setBounds(393, 268, 110, 27);
 		borderPanel.add(btnClean);
 
@@ -226,6 +233,8 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		btnCalSen = new JButton("click");
 		btnCalSen.addActionListener(this);
 		btnCalSen.setToolTipText("Click to get Seniority");
+		btnCalSen.setBackground(Color.WHITE);
+		btnCalSen.setBorder(new LineBorder(new Color(109, 158, 235)));
 		btnCalSen.setFont(new Font("Arial", Font.ITALIC, 10));
 		btnCalSen.setBounds(531, 221, 58, 21);
 		borderPanel.add(btnCalSen);
@@ -338,9 +347,12 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 				JOptionPane.showMessageDialog(this, "Please confirm that you have not missed any camp");
 			} else {
 				u = setBoss(u);
-				try {
+				try {if (u.getPassword() == null) {
+					JOptionPane.showMessageDialog(this, "Name/surname is too short");
+				} else {
 					insertUser(u);
 					JOptionPane.showMessageDialog(this, "User added correctly");
+				}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(this, e);
@@ -355,8 +367,13 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 
 				u = setWorker(u);
 				try {
-					insertUser(u);
-					JOptionPane.showMessageDialog(this, "User added correctly");
+					if (u.getPassword() == null) {
+						JOptionPane.showMessageDialog(this, "Name/surname is too short");
+					} else {
+						insertUser(u);
+						JOptionPane.showMessageDialog(this, "User added correctly");
+					}
+					
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					JOptionPane.showMessageDialog(this, e);
@@ -393,7 +410,6 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		String fecha = sdf.format(dateChooser.getDate());
 		((Boss) u).setJoiningDate(LocalDateTime.parse(fecha, formatter));
-		((Boss) u).setSeniority(Integer.parseInt(textFieldSeniority.getText()));
 		int sen;
 		try {
 			sen = dataBoss.calculateSeniority(LocalDateTime.parse(fecha, formatter));
@@ -426,9 +442,13 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 	}
 
 	private String generatePassword(String name, String surname) {
-		String password;
+		String password = null;
+		if (name.length() < 3 || surname.length() < 3) {
+			password = null;
+		} else {
+			password = name.substring(0, 3) + surname.substring(0, 3) + "*1234";
+		}
 
-		password = name.substring(0, 3) + surname.substring(0, 3) + "*1234";
 		return password;
 	}
 
@@ -469,8 +489,15 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 		}
 		if (e.getSource().equals(textFieldPassword)) {
 			if (textFieldName.getText().isBlank() || textFieldSurname.getText().isBlank()) {
-
-			} else {
+				textFieldPassword.transferFocus();	
+				JOptionPane.showMessageDialog(this, "Please fill the Name/Surname fields first");
+			
+			}else if(textFieldName.getText().length() <3 || textFieldSurname.getText().length()<3) {
+				textFieldPassword.transferFocus();	
+				JOptionPane.showMessageDialog(this, "Name/Surname too short");
+						
+			}
+			else {
 				String s = generatePassword(textFieldName.getText(), textFieldSurname.getText());
 				textFieldPassword.setText(s);
 			}
@@ -485,6 +512,14 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 
 		if (e.getSource().equals(textFieldID)) {
 			int indexList = 0;
+			Pattern pat = Pattern.compile("[a-zA-Z0-9]{1}[0-9]{7}[A-Z a-z]");
+		    Matcher mat = pat.matcher(textFieldID.getText());
+		       if(!mat.matches()){
+		    	   JOptionPane.showMessageDialog(this, "The introduced Id is incorrect, please "
+
+		                   + "introduce a valid one.");
+		    	   textFieldID.setText("");
+		       }   
 			try {
 				u = data.searchUser(textFieldID.getText());
 				if (u != null) {
@@ -495,8 +530,6 @@ public class UserAddWindow extends JDialog implements ActionListener, FocusListe
 					Object[] options = { jbt_modify, jbt_consult, jbt_skip };
 					int a = 1, b = 2;
 					Icon c1 = null;
-					// int o =JOptionPane.showOptionDialog(jbt_skip, e, getTitle(), indexList,
-					// indexList, null, options, e)
 					int o = JOptionPane.showOptionDialog(this,
 							"User already exist, you can consult and modify his/her details", "Choose your option", a,
 							b, c1, null, options);

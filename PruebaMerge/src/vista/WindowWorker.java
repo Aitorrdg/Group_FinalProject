@@ -8,9 +8,13 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.table.JTableHeader;
 
-import modelo.BDImplementationWorker;
+import modelo.BDImplementationAdmin;
+import modelo.BDImplementationBoss;
+import modelo.InterfaceAdministrator;
+import modelo.InterfaceBoss;
 import modelo.InterfaceWorker;
 import modelo.Service;
 import modelo.User;
@@ -32,13 +36,16 @@ import javax.swing.JTable;
 
 public class WindowWorker extends JDialog implements ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JLabel lblNombre;
 	private JButton btnInformation;
 	private Worker wo;
 	private JButton btnInCompleServices;
 	private JButton btnBack;
-	private JLabel lblImg;
 	private InterfaceWorker data;
 	private JScrollPane scrollpaneServices;
 	private JScrollPane scrollPaneIncompletedServices;
@@ -47,6 +54,7 @@ public class WindowWorker extends JDialog implements ActionListener {
 	private JTable tableServices;
 	private JTable tableIncompleteServices;
 	private JPanel borderPanel;
+	private JButton btnCloseSession;
 
 	public WindowWorker(User w, InterfaceWorker data) {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(WindowWorker.class.getResource("/img/Cleaning Service.png")));
@@ -67,9 +75,10 @@ public class WindowWorker extends JDialog implements ActionListener {
 
 		btnInformation = new JButton("My information");
 		btnInformation.setToolTipText("Clic here to look at your information");
-		btnInformation.setFont(new Font("Segoe UI", Font.BOLD, 20));
-		btnInformation.setBackground(new Color(109, 158, 235));
+		btnInformation.setFont(new Font("Arial", Font.BOLD, 20));;
+		btnInformation.setBackground(Color.WHITE);
 		btnInformation.setBounds(582, 46, 200, 53);
+		btnInformation.setBorder(new LineBorder(new Color(109, 158, 235)));
 		borderPanel.add(btnInformation);
 		btnInformation.addActionListener(this);
 
@@ -84,7 +93,8 @@ public class WindowWorker extends JDialog implements ActionListener {
 		btnInCompleServices = new JButton("Incompleted Services");
 		btnInCompleServices.setToolTipText("Clic here to look at your incomplete services");
 		btnInCompleServices.setFont(new Font("Arial", Font.BOLD, 20));
-		btnInCompleServices.setBackground(new Color(109, 158, 235));
+		btnInCompleServices.setBackground(Color.WHITE);
+		btnInCompleServices.setBorder(new LineBorder(new Color(109, 158, 235)));
 		btnInCompleServices.setBounds(186, 441, 416, 59);
 		borderPanel.add(btnInCompleServices);
 		btnInCompleServices.addActionListener(this);
@@ -96,17 +106,24 @@ public class WindowWorker extends JDialog implements ActionListener {
 		borderPanel.add(btnBack);
 		btnBack.addActionListener(this);
 
-		lblImg = new JLabel("");
-		lblImg.setHorizontalAlignment(SwingConstants.CENTER);
-		lblImg.setIcon(new ImageIcon("C:\\Users\\Usuario\\Downloads\\Cleaning Service.png"));
-		lblImg.setBounds(20, 20, 103, 103);
-		borderPanel.add(lblImg);
+		
+		btnCloseSession = new JButton("Close Session");
+		btnCloseSession.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 10));
+		btnCloseSession.setBounds(582, 11, 128, 29);
+		btnCloseSession.setBackground(Color.WHITE);
+		btnCloseSession.setFont(new Font("Arial", Font.BOLD, 10));
+		btnCloseSession.setBorder(new LineBorder(new Color(109, 158, 235)));
+		btnCloseSession.addActionListener(this);
+		borderPanel.add(btnCloseSession);
 
 		btnBack.setVisible(false);
 
 			ArrayList<Service> servicios = null;
 			try {
 				servicios = data.listServices(w.getId());
+				if(servicios.size()==0) {
+					JOptionPane.showMessageDialog(this, "You dont have any services", "No services", JOptionPane.INFORMATION_MESSAGE);
+				}
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -182,7 +199,13 @@ public class WindowWorker extends JDialog implements ActionListener {
 					+ se.getSurname() + " \n " + " Boss code " +  se.getBossId() + " \n " + " Salary: " +  se.getSalary(),
 					se.getName() + " information: ", JOptionPane.INFORMATION_MESSAGE);
 		}
-
+		if (e.getSource().equals(btnCloseSession)) {
+			this.dispose();
+			InterfaceBoss dataBoss=new BDImplementationBoss();
+			InterfaceAdministrator dataAdmin= new BDImplementationAdmin();
+			LoginWindow ventanaPrincipal = new LoginWindow(dataAdmin,dataBoss,data);
+			ventanaPrincipal.setVisible(true);
+		}
 		if (e.getSource().equals(btnBack)) {
 			btnInCompleServices.setVisible(true);
 			if (tableIncompleteServices != null) {
@@ -296,6 +319,7 @@ public class WindowWorker extends JDialog implements ActionListener {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		
 
 		}
 	}

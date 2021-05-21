@@ -37,19 +37,19 @@ public class MainBoss extends JFrame implements ActionListener {
 	private JButton btnManageServices;
 	private Set<Worker> workers;
 	private Set<Service>services;
-	private InterfaceBoss datosBoss;
+	private InterfaceBoss dataBoss;
 	private User b;
 	
-	public MainBoss(User b, InterfaceBoss datosBoss) {
-		this.datosBoss = datosBoss;
+	public MainBoss(User b, InterfaceBoss dataBoss) {
+		this.dataBoss = dataBoss;
 		this.b=b;
 		try {
-			workers = datosBoss.listWorkers();
+			workers = dataBoss.listWorkers();
 		} catch (Exception e1) {
 			JOptionPane.showMessageDialog(this,"ERROR WHILE LISTING THE WORKERS");
 		}
 		try {
-			services=datosBoss.listServices();
+			services=dataBoss.listServices();
 		} catch (Exception e1) {
 			JOptionPane.showMessageDialog(this,"ERROR WHILE LISTING THE SERVICES");
 		}
@@ -63,6 +63,7 @@ public class MainBoss extends JFrame implements ActionListener {
 		setContentPane(borderPane);
 		borderPane.setLayout(null);
 		JPanel backPanel = new JPanel();
+		backPanel.setForeground(Color.BLACK);
 		backPanel.setBounds(25, 28, 654, 435);
 		backPanel.setBackground(new Color(207, 226, 243));
 		borderPane.add(backPanel);
@@ -75,7 +76,6 @@ public class MainBoss extends JFrame implements ActionListener {
 
 		btnManageWorkers = new JButton("MANAGE WORKERS");
 		btnManageWorkers.setFont(new Font("Arial", Font.BOLD, 16));
-		btnManageWorkers.setForeground(Color.BLACK);
 		btnManageWorkers.setBackground(Color.WHITE);
 		btnManageWorkers.setBorder(new LineBorder(new Color(109, 158, 235)));
 		btnManageWorkers.setBounds(27, 191, 262, 67);
@@ -118,12 +118,12 @@ public class MainBoss extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btnManageWorkers)) {
-			AddEditDeleteWindow aedw = new AddEditDeleteWindow(datosBoss, workers,b);
+			AddEditDeleteWindow aedw = new AddEditDeleteWindow(dataBoss, workers,b);
 			this.dispose();
 			aedw.setVisible(true);
 		}
 		if(e.getSource().equals(btnManageServices)) {
-			AddEditDeleteWindow aedw = new AddEditDeleteWindow(services,datosBoss);
+			AddEditDeleteWindow aedw = new AddEditDeleteWindow(services,dataBoss);
 			this.dispose();
 			aedw.setVisible(true);
 		}

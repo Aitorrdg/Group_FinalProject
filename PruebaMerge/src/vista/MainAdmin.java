@@ -14,12 +14,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
 import modelo.InterfaceAdministrator;
 import modelo.InterfaceBoss;
 import modelo.InterfaceWorker;
-import modelo.JTableUtilities;
 import modelo.User;
+import resources.JTableUtilities;
 
 public class MainAdmin extends JDialog implements ActionListener {
 
@@ -69,18 +70,24 @@ public class MainAdmin extends JDialog implements ActionListener {
 		btnUserInfo = new JButton("User Information");
 		btnUserInfo.setFont(new Font("Arial", Font.BOLD, 15));
 		btnUserInfo.setBounds(23, 521, 168, 47);
+		btnUserInfo.setBackground(Color.WHITE);
+		btnUserInfo.setBorder(new LineBorder(new Color(109, 158, 235)));
 		panel.add(btnUserInfo);
 		btnUserInfo.addActionListener(this);
 
 		btnUserAdd = new JButton("Manage");
 		btnUserAdd.setFont(new Font("Arial", Font.BOLD, 15));
 		btnUserAdd.setBounds(724, 521, 168, 47);
+		btnUserAdd.setBackground(Color.WHITE);
+		btnUserInfo.setBorder(new LineBorder(new Color(109, 158, 235)));
 		panel.add(btnUserAdd);
 		btnUserAdd.addActionListener(this);
 
 		btnCloseSession = new JButton("Close Session");
 		btnCloseSession.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 10));
 		btnCloseSession.setBounds(764, 15, 128, 29);
+		btnCloseSession.setBackground(Color.WHITE);
+		btnCloseSession.setBorder(new LineBorder(new Color(109, 158, 235)));
 		btnCloseSession.addActionListener(this);
 		panel.add(btnCloseSession);
 
@@ -100,8 +107,6 @@ public class MainAdmin extends JDialog implements ActionListener {
 		// TODO Auto-generated method stub
 		if (a.getSource().equals(btnUserInfo)) {
 			showUserInfo();
-//			UserInfoWindow uif = new UserInfoWindow(this, true, data);
-//			uif.setVisible(true);
 		}
 		if (a.getSource().equals(btnUserAdd)) {
 			UserAddWindow UAW = new UserAddWindow(data,dataBoss, true);

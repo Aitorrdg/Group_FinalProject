@@ -4,12 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.Arrays;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,15 +17,15 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import modelo.Boss;
 import modelo.InterfaceAdministrator;
 import modelo.InterfaceBoss;
 import modelo.InterfaceWorker;
-import modelo.TextPrompt;
 import modelo.User;
 import modelo.Worker;
-import javax.swing.JCheckBox;
+import resources.TextPrompt;
 
 public class LoginWindow extends JFrame implements ActionListener {
 
@@ -39,8 +37,6 @@ public class LoginWindow extends JFrame implements ActionListener {
 	private JPasswordField passwordField;
 	private JLabel lblSelectType;
 	private JComboBox<String> comboBoxUserType;
-	// private JLabel lblPassIcon;
-	// private JLabel lblUserIcon;
 	private JButton btnClose;
 	private JButton btnLogin;
 	private InterfaceAdministrator dataAdmin;
@@ -49,7 +45,6 @@ public class LoginWindow extends JFrame implements ActionListener {
 	private JTextField textFieldUser;
 	private TextPrompt placeholder;
 	private final String adminUserName="admin";
-	private final String adminPasswd="abcd*1234";
 
 	public LoginWindow(InterfaceAdministrator dataAdmin,InterfaceBoss dataBoss,InterfaceWorker dataWorker) {
 		this.dataAdmin = dataAdmin;
@@ -97,12 +92,16 @@ public class LoginWindow extends JFrame implements ActionListener {
 		btnLogin = new JButton("Login");
 		btnLogin.setBounds(116, 340, 141, 38);
 		btnLogin.setFont(new Font("Arial", Font.BOLD, 16));
+		btnLogin.setBackground(Color.WHITE);
+		btnLogin.setBorder(new LineBorder(new Color(109, 158, 235)));
 		borderPanel.add(btnLogin);
 		btnLogin.addActionListener(this);
 
 		btnClose = new JButton("Close");
 		btnClose.setBounds(369, 340, 141, 38);
 		btnClose.setFont(new Font("Arial", Font.BOLD, 16));
+		btnClose.setBackground(Color.WHITE);
+		btnClose.setBorder(new LineBorder(new Color(109, 158, 235)));
 		borderPanel.add(btnClose);
 
 		textFieldUser = new JTextField();
@@ -112,8 +111,6 @@ public class LoginWindow extends JFrame implements ActionListener {
 		borderPanel.add(textFieldUser);
 		textFieldUser.setColumns(10);
 		placeholder = new TextPrompt("Username", textFieldUser);
-		placeholder.changeAlpha(0.75f);
-		placeholder.setFont(new Font("Arial", Font.ITALIC, 10));
 		
 		
 		JCheckBox chckbxShowPassword = new JCheckBox("Show password");
@@ -130,20 +127,6 @@ public class LoginWindow extends JFrame implements ActionListener {
 		chckbxShowPassword.setBounds(387, 305, 122, 21);
 		borderPanel.add(chckbxShowPassword);
 		
-		
-		
-		
-		
-		textFieldUser.addKeyListener((KeyListener) new KeyAdapter() {
-			@SuppressWarnings("deprecation")
-			public void keyReleased(KeyEvent e) {
-				super.keyReleased(e);
-				if (textFieldUser.getText().length() > 0 && passwordField.getText().length() > 0)
-					btnLogin.setEnabled(true);
-				else
-					btnLogin.setEnabled(false);
-			}
-		});
 
 		btnClose.addActionListener(this);
 
